@@ -14,11 +14,11 @@ export default function ConfirmationPage() {
               label="Confirmation help"
               tooltip="Users should land here after a successful request submission."
               title="Booking confirmation"
-              description="The final page will show the booking reference, selected venue, date, time slot, and the current pending status while the admin reviews the request."
+              description="This page confirms that your booking request has been received and is currently waiting for venue review."
             />
           </div>
           <CardTitle className="font-display text-4xl font-semibold">
-            Your booking request has been staged for review.
+            Your booking request has been received.
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 text-sm leading-7 text-muted-foreground md:grid-cols-2">
@@ -26,6 +26,8 @@ export default function ConfirmationPage() {
           <p>Venue: Dewan Sutera Kasih</p>
           <p>Date: Saturday, May 30, 2026</p>
           <p>Time slot: 3:00 PM - 7:00 PM</p>
+          <p>Status: Pending review</p>
+          <p>Next step: Our team will contact you after review.</p>
         </CardContent>
       </Card>
     </PageShell>

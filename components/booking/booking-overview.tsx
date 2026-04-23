@@ -1,6 +1,7 @@
 import { ContextHelp } from "@/components/help/context-help";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BOOKING_TIME_SLOTS, EVENT_TYPES } from "@/lib/constants/booking";
+import { BOOKING_EXPERIENCE_NOTES } from "@/lib/data/venue";
 
 export function BookingOverview() {
   return (
@@ -8,12 +9,12 @@ export function BookingOverview() {
       <Card>
         <CardHeader className="space-y-4">
           <div className="flex items-center gap-3">
-            <CardTitle>Booking steps scaffold</CardTitle>
+            <CardTitle>Booking steps</CardTitle>
             <ContextHelp
               label="Booking steps help"
               tooltip="Hover for a quick explanation, click for more context."
               title="Booking steps"
-              description="The final build will turn these cards into a multi-step flow with client and server validation, contextual help, and admin-ready booking summaries."
+              description="Follow these steps to share your event details, choose a suitable slot, include any setup requests, and send your booking request for review."
             />
           </div>
         </CardHeader>
@@ -53,7 +54,22 @@ export function BookingOverview() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Exact slot selection preview</CardTitle>
+            <CardTitle>What to expect from the booking process</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {BOOKING_EXPERIENCE_NOTES.map((note) => (
+              <div
+                key={note}
+                className="rounded-[var(--radius-md)] border border-border/70 bg-white/60 px-4 py-3 text-sm text-muted-foreground"
+              >
+                {note}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Available time slots</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-3 sm:grid-cols-3">
             {BOOKING_TIME_SLOTS.map((slot) => (

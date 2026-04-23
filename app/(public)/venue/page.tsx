@@ -1,4 +1,5 @@
 import { ContextHelp } from "@/components/help/context-help";
+import { VenueGallery } from "@/components/marketing/venue-gallery";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VENUE_DETAILS } from "@/lib/data/venue";
 import { BOOKING_TIME_SLOTS } from "@/lib/constants/booking";
@@ -18,7 +19,7 @@ export default function VenuePage() {
             label="Venue details help"
             tooltip="This page helps users compare venue fit before they start booking."
             title="How to use this page"
-            description="Review the venue overview, facilities, supported event types, and exact time slots before starting a booking request."
+            description="Review the venue overview, facilities, supported event types, and exact booking slots before starting your request."
           />
         </div>
         <p className="max-w-3xl text-base leading-8 text-muted-foreground md:text-lg">
@@ -62,7 +63,7 @@ export default function VenuePage() {
             label="Time slot help"
             tooltip="Users choose exact start and end times, not vague sessions."
             title="Time slot selection"
-            description="This project uses fixed custom slots to keep availability clear and realistic. Users should always see exact start and end times before submitting a request."
+            description="Choose from exact start and end times so your event planning is clear from the beginning."
           />
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -77,6 +78,12 @@ export default function VenuePage() {
             </Card>
           ))}
         </div>
+      </section>
+      <section className="space-y-4">
+        <h2 className="font-display text-2xl font-semibold">
+          Hall gallery
+        </h2>
+        <VenueGallery />
       </section>
     </div>
   );

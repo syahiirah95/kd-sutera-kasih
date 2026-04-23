@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { getSupabaseEnv, isSupabaseConfigured } from "@/lib/auth/env";
+import { MOCK_AUTH_USER } from "@/lib/auth/mock";
 import type { AuthProvider, AuthUser } from "@/lib/types/auth";
 
 export async function createSupabaseServerClient() {
@@ -33,7 +34,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    return null;
+    return MOCK_AUTH_USER;
   }
 
   const {

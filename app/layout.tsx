@@ -17,7 +17,7 @@ const bodyFont = Manrope({
 
 export const metadata: Metadata = {
   title: "KD Sutera Kasih",
-  description: "A dreamy single-venue booking web app scaffold with planner-ready architecture.",
+  description: "Book Dewan Sutera Kasih for weddings, celebrations, corporate functions, and meaningful private events.",
 };
 
 export default function RootLayout({

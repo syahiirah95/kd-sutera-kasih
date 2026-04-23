@@ -1,6 +1,10 @@
 import { BookingOverview } from "@/components/booking/booking-overview";
+import { BookingFormPreview } from "@/components/booking/booking-form-preview";
 import { HeroSection } from "@/components/marketing/hero-section";
 import { HighlightsGrid } from "@/components/marketing/highlights-grid";
+import { TestimonialsSection } from "@/components/marketing/testimonials-section";
+import { VenueGallery } from "@/components/marketing/venue-gallery";
+import { VenueVideoShowcase } from "@/components/marketing/venue-video-showcase";
 import { PageShell } from "@/components/shared/page-shell";
 import { SectionHeading } from "@/components/shared/section-heading";
 
@@ -12,18 +16,50 @@ export default function LandingPage() {
         <section className="space-y-6">
           <SectionHeading
             eyebrow="Venue Highlights"
-            title="A premium booking experience designed for weddings and beyond."
-            description="The scaffold already separates public pages, admin routes, shared modules, and planner-ready components so we can build fast without messy refactors."
+            title="A beautiful hall for weddings, celebrations, and meaningful gatherings."
+            description="Discover the atmosphere, flexibility, and practical booking experience designed to help you plan your event at Dewan Sutera Kasih with confidence."
           />
           <HighlightsGrid />
         </section>
         <section className="space-y-6">
           <SectionHeading
             eyebrow="Booking Flow"
-            title="Core flow scaffolding is ready to expand."
-            description="Custom time slots, contextual help, demo role switching, and account-management rules are already reflected in the code structure."
+            title="A clear booking journey from first visit to request submission."
+            description="Review venue information, choose an exact time slot, share your event details, and send your booking request through a smooth, guided experience."
           />
           <BookingOverview />
+        </section>
+        <section className="space-y-6">
+          <SectionHeading
+            eyebrow="Gallery"
+            title="Explore the look and feel of Dewan Sutera Kasih."
+            description="Browse the hall atmosphere, stage styling, reception setup, and venue character to help you imagine how your event can come to life in the space."
+          />
+          <VenueGallery />
+        </section>
+        <section className="space-y-6">
+          <SectionHeading
+            eyebrow="Venue In Motion"
+            title="See the hall atmosphere in motion before you book."
+            description="A short venue preview helps you understand the lighting, scale, and overall mood of Dewan Sutera Kasih before submitting your request."
+          />
+          <VenueVideoShowcase />
+        </section>
+        <section className="space-y-6">
+          <SectionHeading
+            eyebrow="Request Booking"
+            title="Share your event details with a booking flow that feels clear and practical."
+            description="The request form is structured to help you provide the details that matter most, from event type and exact slot to contact information and setup notes."
+          />
+          <BookingFormPreview />
+        </section>
+        <section className="space-y-6">
+          <SectionHeading
+            eyebrow="Testimonials"
+            title="Hear how customers experienced Dewan Sutera Kasih."
+            description="A trusted venue experience is built not only on visuals, but also on how smooth and reassuring the full booking journey feels."
+          />
+          <TestimonialsSection />
         </section>
       </PageShell>
     </div>

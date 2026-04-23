@@ -1,3 +1,4 @@
+import { AdminActivity } from "@/components/admin/admin-activity";
 import { DashboardOverview } from "@/components/admin/dashboard-overview";
 import { ContextHelp } from "@/components/help/context-help";
 import { PageShell } from "@/components/shared/page-shell";
@@ -10,16 +11,17 @@ export default function AdminPage() {
         <SectionHeading
           eyebrow="Admin Dashboard"
           title="A lightweight operations surface for booking review."
-          description="This scaffold includes status badges, placeholder stats, and list sections so we can wire Supabase data next without rebuilding the layout."
+          description="Review incoming booking requests, track current statuses, and manage decisions with a simple, practical dashboard."
         />
         <ContextHelp
           label="Admin help"
-          tooltip="Judges can switch into admin view from the profile dropdown after login."
-          title="Competition demo admin mode"
-          description="The full build will expose the dashboard after authentication through the demo role switcher. This scaffold keeps the admin route ready while auth wiring comes next."
+          tooltip="The admin dashboard is used to review and manage venue booking requests."
+          title="Admin dashboard"
+          description="Use this area to review booking details, check availability context, and approve or reject requests clearly."
         />
       </div>
       <DashboardOverview />
+      <AdminActivity />
     </PageShell>
   );
 }

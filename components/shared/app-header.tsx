@@ -44,7 +44,7 @@ export async function AppHeader() {
               href="/admin"
               className="hidden text-sm text-muted-foreground transition hover:text-foreground md:inline-flex"
             >
-              Admin preview
+              Admin access
             </Link>
             <Button asLink href="/login" size="lg">
               Sign in

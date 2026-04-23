@@ -66,6 +66,25 @@ export function DashboardOverview() {
           ))}
         </CardContent>
       </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Mock dashboard filters</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-3">
+          {["All", "Pending", "Approved", "Rejected", "With layout"].map((filter) => (
+            <span
+              key={filter}
+              className={`rounded-full border px-4 py-2 text-sm ${
+                filter === "Pending"
+                  ? "border-primary/40 bg-primary/10 text-foreground"
+                  : "border-border/70 bg-white/60 text-muted-foreground"
+              }`}
+            >
+              {filter}
+            </span>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }

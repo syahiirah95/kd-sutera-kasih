@@ -63,9 +63,9 @@ export function ProfileMenu({ currentMode, user }: ProfileMenuProps) {
             </div>
             <ContextHelp
               label="Role switch help"
-              tooltip="Judges can switch between User and Admin after login."
-              title="Competition role switching"
-              description="This dropdown supports the judging flow by letting one authenticated account switch between User and Admin views. It is a demo-only convenience pattern."
+              tooltip="Switch between account view and admin review view after signing in."
+              title="View options"
+              description="Use this menu to move between your booking account experience and the admin review dashboard."
             />
           </div>
           <StatusBadge status={currentMode === "admin" ? "approved" : "pending"}>
@@ -82,6 +82,9 @@ export function ProfileMenu({ currentMode, user }: ProfileMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <a href="/account">Account settings</a>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <a href={currentMode === "admin" ? "/admin" : "/"}>Go to current view</a>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <a href="/login">Logout</a>
