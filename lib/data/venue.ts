@@ -7,7 +7,7 @@ import {
 
 export const VENUE_DETAILS = {
   description:
-    "Dewan Sutera Kasih offers a warm, elegant event space for wedding receptions, engagement ceremonies, graduation celebrations, corporate gatherings, and private functions with flexible setup options and clear booking slots.",
+    "Dewan Sutera Kasih offers a warm, elegant event space for wedding receptions, engagement ceremonies, graduation celebrations, corporate gatherings, and private functions with flexible setup options and a clear booking journey.",
   facilities: [
     "Indoor main hall with flexible layout zones",
     "Bridal room and prep space",
@@ -18,7 +18,7 @@ export const VENUE_DETAILS = {
   ],
   name: "Dewan Sutera Kasih",
   policies: [
-    "Booking requests follow the exact start and end times shown in the slot picker.",
+    "Booking requests use a custom start and end time chosen by the customer during the booking flow.",
     "Slot availability is reviewed again before final confirmation to avoid schedule conflicts.",
     "Large setup requests may be reviewed together with layout and event notes before approval.",
   ],
@@ -49,7 +49,7 @@ export const VENUE_GALLERY = [
 
 export const BOOKING_EXPERIENCE_NOTES = [
   "Clear booking steps from event details to final submission",
-  "Exact time slots with visible start and end times",
+  "Custom start and end times for clearer scheduling",
   "Helpful guidance throughout the booking journey",
   "Flexible event support for weddings, graduations, and private functions",
 ] as const;
@@ -63,7 +63,7 @@ export const TESTIMONIALS = [
   },
   {
     quote:
-      "The exact time-slot flow is much clearer than the usual morning or evening labels. It made planning our graduation dinner way easier.",
+      "Being able to choose our own start and end time made the booking flow much clearer than the usual morning or evening labels.",
     name: "Nabilah Rahman",
     role: "Graduation Event Organizer",
   },
@@ -90,7 +90,7 @@ export const HIGHLIGHT_ITEMS = [
   {
     description: "Choose clear start and end times so planning feels straightforward from the beginning.",
     icon: CalendarDays,
-    title: "Exact booking slots",
+    title: "Custom booking time",
   },
   {
     description: "Helpful guidance is available throughout the booking flow to make each step easier to understand.",

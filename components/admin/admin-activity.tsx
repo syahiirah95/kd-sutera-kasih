@@ -27,7 +27,7 @@ export function AdminActivity() {
               label="Priority review help"
               tooltip="Admins should understand which bookings need attention first."
               title="Priority review queue"
-              description="The final dashboard should surface the most urgent booking requests first, especially requests that may block future time-slot availability or need a quick admin decision."
+              description="The final dashboard should surface the most urgent booking requests first, especially requests that may block future time availability or need a quick admin decision."
             />
           </div>
         </CardHeader>

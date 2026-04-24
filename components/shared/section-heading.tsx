@@ -18,7 +18,10 @@ export function SectionHeading({
       <p className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
         {eyebrow}
       </p>
-      <h2 className="max-w-4xl font-display text-3xl font-semibold leading-tight text-foreground md:text-5xl">
+      <h2
+        data-butterfly-anchor="section"
+        className="max-w-4xl font-display text-3xl font-semibold leading-tight text-foreground md:text-5xl"
+      >
         {title}
       </h2>
       <p className="max-w-3xl text-base leading-8 text-muted-foreground md:text-lg">

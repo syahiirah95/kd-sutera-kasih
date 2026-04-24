@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { BOOKING_TIME_SLOTS, EVENT_TYPES } from "@/lib/constants/booking";
+import { EVENT_TYPES, OPERATING_HOURS, SUGGESTED_TIME_WINDOWS } from "@/lib/constants/booking";
+import { formatTimeRange } from "@/lib/time";
 
 const PREVIEW_STEPS = [
   {
-    fields: ["Event type", "Event date", "Exact time slot", "Estimated guests"],
+    fields: ["Event type", "Event date", "Start time", "End time", "Estimated guests"],
     icon: CalendarRange,
     title: "Step 1: Event basics",
   },
@@ -19,14 +21,19 @@ const PREVIEW_STEPS = [
     title: "Step 2: Contact details",
   },
   {
-    fields: ["Special requests", "Theme notes", "Planner preferences"],
+    fields: ["Theme / Style", "Vendor notes", "Special requests"],
     icon: NotebookPen,
     title: "Step 3: Event notes",
   },
   {
-    fields: ["2D layout", "Adaptive 3D preview", "Review summary"],
+    fields: ["2D planner", "Adaptive 3D preview", "Layout options"],
     icon: LayoutTemplate,
-    title: "Step 4: Planner and review",
+    title: "Step 4: Layout",
+  },
+  {
+    fields: ["Event summary", "Contact review", "Submission check"],
+    icon: CircleUserRound,
+    title: "Step 5: Review",
   },
 ] as const;
 
@@ -41,7 +48,7 @@ export function BookingFormPreview() {
               label="Booking form help"
               tooltip="Use this form to prepare the details needed for your booking request."
               title="Booking request form"
-              description="Share your event details, preferred date, exact booking slot, and any important notes so the venue team can review your request properly."
+              description="Share your event details, preferred date, custom event time, and any important notes so the venue team can review your request properly."
             />
           </div>
         </CardHeader>
@@ -49,29 +56,48 @@ export function BookingFormPreview() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
               <Label htmlFor="event-type">Event type</Label>
-              <Input id="event-type" placeholder={EVENT_TYPES[0].label} />
+              <Select id="event-type" defaultValue={EVENT_TYPES[0].id}>
+                {EVENT_TYPES.map((eventType) => (
+                  <option key={eventType.id} value={eventType.id}>
+                    {eventType.label}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="event-date">Event date</Label>
               <Input id="event-date" type="date" />
             </div>
           </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-2">
+              <Label htmlFor="preview-start-time">Start time</Label>
+              <Input id="preview-start-time" min={OPERATING_HOURS.start} max={OPERATING_HOURS.end} type="time" />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="preview-end-time">End time</Label>
+              <Input id="preview-end-time" min={OPERATING_HOURS.start} max={OPERATING_HOURS.end} type="time" />
+            </div>
+            <div className="rounded-[var(--radius-md)] border border-border/70 bg-white/60 px-4 py-3 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground">Operating hours</p>
+              <p className="mt-2">{OPERATING_HOURS.label}</p>
+            </div>
+          </div>
           <div className="grid gap-2">
-            <Label>Available time slots</Label>
+            <Label>Suggested booking windows</Label>
             <div className="grid gap-3 md:grid-cols-3">
-              {BOOKING_TIME_SLOTS.map((slot, index) => (
+              {SUGGESTED_TIME_WINDOWS.map((window, index) => (
                 <div
-                  key={slot.id}
+                  key={window.label}
                   className={`rounded-[var(--radius-md)] border px-4 py-4 text-sm transition ${
                     index === 1
                       ? "border-primary/40 bg-primary/10 text-foreground"
                       : "border-border/70 bg-white/60 text-muted-foreground"
                   }`}
                 >
-                  <p className="font-semibold">{slot.label}</p>
-                  <p className="mt-2">
-                    {slot.startTime} - {slot.endTime}
-                  </p>
+                  <p className="font-semibold">{window.label}</p>
+                  <p className="mt-2">{formatTimeRange(window.startTime, window.endTime)}</p>
+                  <p className="mt-3 leading-6">{window.note}</p>
                 </div>
               ))}
             </div>

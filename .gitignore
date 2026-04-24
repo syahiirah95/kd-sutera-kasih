@@ -44,3 +44,6 @@ next-env.d.ts
 # large local media assets
 /assets/bg/*.mp4
 /assets/obj_glb/*.glb
+/assets/event-gallery*
+/assets/hall-gallery*
+/assets/screenshot*

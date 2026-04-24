@@ -9,7 +9,7 @@ export function HeroSection() {
       <div className="grid gap-8 overflow-hidden rounded-[2rem] border border-white/50 bg-gradient-to-br from-white/90 via-[#fff7ef] to-[#fdebd7] p-6 shadow-[0_28px_100px_rgba(128,86,54,0.16)] md:p-10 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-6">
           <p className="inline-flex rounded-full border border-primary/20 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-            Dewan Sutera Kasih
+            Sutera Kasih Collection
           </p>
           <div className="space-y-4">
             <h1 className="max-w-4xl font-display text-5xl font-semibold leading-[0.92] text-foreground md:text-7xl">
@@ -31,7 +31,7 @@ export function HeroSection() {
             {[
               {
                 icon: CalendarDays,
-                label: "Clear booking slots",
+                label: "Custom booking time",
               },
               {
                 icon: Sparkles,
@@ -64,13 +64,13 @@ export function HeroSection() {
             <div className="grid gap-3 text-sm leading-7 text-muted-foreground">
               <p>Comfortable hall setting for intimate and large-scale events</p>
               <p>Clear venue details, policies, and booking steps</p>
-              <p>Exact booking slots for better event planning</p>
+              <p>Custom event timing for better planning</p>
               <p>Beautiful visual presentation to help you picture the space</p>
               <p>Simple request flow with room for custom event notes</p>
             </div>
             <div className="rounded-[var(--radius-lg)] border border-white/70 bg-white/75 p-5">
               <p className="text-sm leading-7 text-muted-foreground">
-                From receptions and engagements to graduations and corporate gatherings, Dewan Sutera Kasih is presented as a venue that feels refined, welcoming, and easy to book.
+                From receptions and engagements to graduations and corporate gatherings, the Sutera Kasih collection is presented as a group of halls that feel refined, welcoming, and easy to book.
               </p>
             </div>
           </CardContent>

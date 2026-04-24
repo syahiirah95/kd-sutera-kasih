@@ -24,7 +24,7 @@ export function DialogContent({
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground transition hover:bg-white/70 hover:text-foreground">
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full border border-[#d8c4b2]/70 bg-white/88 p-2 text-[#5f3f2f] shadow-[0_8px_20px_rgba(0,0,0,0.18)] backdrop-blur transition hover:border-[#ff1f2d] hover:bg-[linear-gradient(135deg,#ff4b55_0%,#e00012_52%,#ff7a7f_100%)] hover:text-white hover:shadow-[0_0_22px_rgba(255,31,45,0.62),0_8px_20px_rgba(224,0,18,0.42)]">
           <X className="size-4" />
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
@@ -42,10 +42,21 @@ export function DialogHeader({
 export function DialogTitle({
   children,
   className,
-}: React.ComponentProps<"h2">) {
+}: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
-    <h2 className={cn("font-display text-2xl font-semibold text-foreground", className)}>
+    <DialogPrimitive.Title className={cn("font-display text-2xl font-semibold text-foreground", className)}>
       {children}
-    </h2>
+    </DialogPrimitive.Title>
+  );
+}
+
+export function DialogDescription({
+  children,
+  className,
+}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+  return (
+    <DialogPrimitive.Description className={cn("text-sm leading-6 text-muted-foreground", className)}>
+      {children}
+    </DialogPrimitive.Description>
   );
 }

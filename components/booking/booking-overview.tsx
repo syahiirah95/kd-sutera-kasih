@@ -1,7 +1,8 @@
 import { ContextHelp } from "@/components/help/context-help";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BOOKING_TIME_SLOTS, EVENT_TYPES } from "@/lib/constants/booking";
+import { EVENT_TYPES, SUGGESTED_TIME_WINDOWS } from "@/lib/constants/booking";
 import { BOOKING_EXPERIENCE_NOTES } from "@/lib/data/venue";
+import { formatTimeRange } from "@/lib/time";
 
 export function BookingOverview() {
   return (
@@ -14,7 +15,7 @@ export function BookingOverview() {
               label="Booking steps help"
               tooltip="Hover for a quick explanation, click for more context."
               title="Booking steps"
-              description="Follow these steps to share your event details, choose a suitable slot, include any setup requests, and send your booking request for review."
+              description="Follow these steps to share your event details, choose a suitable time range, include any setup requests, and send your booking request for review."
             />
           </div>
         </CardHeader>
@@ -24,7 +25,7 @@ export function BookingOverview() {
             "Contact details",
             "Event notes",
             "Planner and layout",
-            "Review and submit",
+            "Review and confirmation",
           ].map((step, index) => (
             <div
               key={step}
@@ -69,17 +70,20 @@ export function BookingOverview() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Available time slots</CardTitle>
+            <CardTitle>Suggested booking windows</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-3 sm:grid-cols-3">
-            {BOOKING_TIME_SLOTS.map((slot) => (
+            {SUGGESTED_TIME_WINDOWS.map((window) => (
               <div
-                key={slot.id}
+                key={window.label}
                 className="rounded-[var(--radius-md)] border border-border/70 bg-white/60 px-4 py-4"
               >
-                <p className="text-sm font-semibold text-foreground">{slot.label}</p>
+                <p className="text-sm font-semibold text-foreground">{window.label}</p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {slot.startTime} - {slot.endTime}
+                  {formatTimeRange(window.startTime, window.endTime)}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  {window.description}
                 </p>
               </div>
             ))}

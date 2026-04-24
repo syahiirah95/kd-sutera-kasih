@@ -61,7 +61,7 @@ export function VenueVideoShowcase() {
               Venue experience
             </span>
             <p className="mt-2 text-muted-foreground">
-              A short venue film helps guests understand the character of Dewan Sutera Kasih before they move into hall details, time-slot selection, and booking submission.
+              A short venue film helps guests understand the character of Dewan Sutera Kasih before they move into hall details, event-time selection, and booking submission.
             </p>
           </div>
         </CardContent>

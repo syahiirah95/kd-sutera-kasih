@@ -6,23 +6,30 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 type ContextHelpProps = {
+  children?: React.ReactNode;
+  contentClassName?: string;
   description: string;
   label: string;
   title: string;
   tooltip: string;
+  triggerClassName?: string;
 };
 
 export function ContextHelp({
+  children,
+  contentClassName,
   description,
   label,
   title,
   tooltip,
+  triggerClassName,
 }: ContextHelpProps) {
   const [open, setOpen] = useState(false);
 
@@ -34,7 +41,7 @@ export function ContextHelp({
             type="button"
             size="icon"
             variant="ghost"
-            className="rounded-full border border-border/70 bg-white/70 text-muted-foreground"
+            className={`rounded-full border border-border/70 bg-white/70 text-muted-foreground ${triggerClassName ?? ""}`}
             aria-label={label}
             onClick={() => setOpen(true)}
           >
@@ -44,11 +51,12 @@ export function ContextHelp({
         <TooltipContent>{tooltip}</TooltipContent>
       </Tooltip>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className={contentClassName}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
-          <p className="text-sm leading-7 text-muted-foreground">{description}</p>
+          {children ? <div>{children}</div> : null}
         </DialogContent>
       </Dialog>
     </>

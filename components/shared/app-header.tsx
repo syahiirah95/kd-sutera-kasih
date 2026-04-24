@@ -13,33 +13,32 @@ export async function AppHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/40 bg-background/70 backdrop-blur-xl">
-      <PageShell className="flex min-h-20 items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <AppLogo />
-            <div>
-              <p className="font-display text-xl font-semibold">{APP_NAME}</p>
-              <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
-                Venue Booking
-              </p>
-            </div>
-          </Link>
-          <nav className="hidden items-center gap-2 lg:flex">
-            {PRIMARY_NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full px-4 py-2 text-sm text-muted-foreground transition hover:bg-white/60 hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
+      <PageShell className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 justify-self-start">
+          <AppLogo />
+          <div className="min-w-0">
+            <p className="truncate font-display text-lg font-semibold md:text-xl">{APP_NAME}</p>
+          </div>
+        </Link>
+
+        <nav className="hidden items-center gap-2 justify-self-center lg:flex">
+          {PRIMARY_NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-full px-4 py-1.5 text-sm text-muted-foreground transition hover:bg-white/60 hover:text-foreground"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
         {user ? (
-          <ProfileMenu currentMode={demoMode} user={user} />
+          <div className="justify-self-end">
+            <ProfileMenu currentMode={demoMode} user={user} />
+          </div>
         ) : (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 justify-self-end">
             <Link
               href="/admin"
               className="hidden text-sm text-muted-foreground transition hover:text-foreground md:inline-flex"

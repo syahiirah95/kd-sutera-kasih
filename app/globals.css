@@ -79,6 +79,15 @@ textarea {
   font: inherit;
 }
 
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 ::selection {
   background: rgba(212, 155, 106, 0.28);
 }
@@ -93,6 +102,333 @@ textarea {
   width: min(100%, 80rem);
   margin-inline: auto;
   padding-inline: 1rem;
+}
+
+@keyframes booking-butterfly-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(3deg);
+  }
+}
+
+@keyframes booking-butterfly-wing-left {
+  0%,
+  100% {
+    transform: rotate(7deg) scaleY(1);
+  }
+
+  50% {
+    transform: rotate(23deg) scaleY(0.9);
+  }
+}
+
+@keyframes booking-butterfly-wing-right {
+  0%,
+  100% {
+    transform: rotate(-7deg) scaleY(1);
+  }
+
+  50% {
+    transform: rotate(-23deg) scaleY(0.9);
+  }
+}
+
+@keyframes booking-butterfly-flight-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 10px 18px rgba(191, 141, 86, 0.22));
+  }
+
+  50% {
+    filter: drop-shadow(0 14px 24px rgba(191, 141, 86, 0.34));
+  }
+}
+
+@keyframes booking-butterfly-sparkle {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.35);
+  }
+
+  20% {
+    opacity: 0.95;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--sparkle-x)), calc(-50% + var(--sparkle-y))) scale(1.15);
+  }
+}
+
+@keyframes booking-butterfly-trail-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    filter: saturate(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    filter: saturate(1.18);
+  }
+}
+
+@keyframes booking-butterfly-trail-star {
+  0%,
+  100% {
+    transform: rotate(-8deg) scale(0.72);
+  }
+
+  18% {
+    transform: rotate(6deg) scale(1.16);
+  }
+
+  44% {
+    transform: rotate(18deg) scale(0.86);
+  }
+
+  68% {
+    transform: rotate(-4deg) scale(1.08);
+  }
+}
+
+.booking-butterfly {
+  animation: booking-butterfly-float 2.8s ease-in-out infinite;
+}
+
+.booking-butterfly-flight {
+  animation:
+    booking-butterfly-float 1.3s ease-in-out infinite,
+    booking-butterfly-flight-glow 1.1s ease-in-out infinite;
+}
+
+.booking-butterfly-dragging {
+  animation:
+    booking-butterfly-float 1s ease-in-out infinite,
+    booking-butterfly-flight-glow 0.9s ease-in-out infinite;
+}
+
+.booking-butterfly-trail {
+  overflow: visible;
+  transform-origin: 100% 50%;
+  animation: booking-butterfly-trail-breathe 4.6s ease-in-out infinite;
+}
+
+.booking-butterfly-trail-svg {
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(248, 185, 56, 0.22));
+}
+
+.booking-butterfly-flight .booking-butterfly-trail {
+  animation-duration: 3.8s;
+}
+
+.booking-butterfly-dragging .booking-butterfly-trail {
+  animation-duration: 3.4s;
+}
+
+.booking-butterfly-trail-star {
+  filter:
+    drop-shadow(0 0 7px rgba(248, 185, 56, 0.94))
+    drop-shadow(0 0 16px rgba(255, 220, 130, 0.34));
+  animation: booking-butterfly-trail-star 4.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.booking-butterfly-wing-left {
+  animation: booking-butterfly-wing-left 0.9s ease-in-out infinite;
+}
+
+.booking-butterfly-wing-right {
+  animation: booking-butterfly-wing-right 0.9s ease-in-out infinite;
+}
+
+.booking-form-nav-primary,
+.booking-form-nav-secondary,
+.booking-form-nav-neutral {
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-form-nav-primary::before,
+.booking-form-nav-secondary::before,
+.booking-form-nav-neutral::before {
+  position: absolute;
+  inset: -60% -35%;
+  content: "";
+  opacity: 0;
+  transform: translateX(-70%) rotate(8deg);
+  transition:
+    opacity 180ms ease,
+    transform 520ms ease;
+}
+
+.booking-form-nav-primary::before {
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 248, 215, 0.86) 48%, transparent 64%);
+}
+
+.booking-form-nav-secondary::before {
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 221, 221, 0.9) 48%, transparent 64%);
+}
+
+.booking-form-nav-neutral::before {
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 248, 215, 0.72) 48%, transparent 64%);
+}
+
+.booking-form-nav-primary:hover:not(:disabled) {
+  box-shadow:
+    0 8px 22px rgba(184, 111, 41, 0.36),
+    0 0 18px rgba(255, 209, 103, 0.42);
+  filter: saturate(1.12) brightness(1.04);
+}
+
+.booking-form-nav-secondary:hover:not(:disabled) {
+  box-shadow:
+    0 8px 20px rgba(184, 79, 88, 0.36),
+    0 0 18px rgba(229, 139, 143, 0.5);
+  filter: saturate(1.16) brightness(1.02);
+}
+
+.booking-form-nav-neutral:hover:not(:disabled) {
+  border-color: rgba(200, 137, 62, 0.52);
+  color: #8d542d;
+  box-shadow:
+    0 7px 18px rgba(184, 111, 41, 0.18),
+    0 0 14px rgba(255, 209, 103, 0.28);
+  filter: saturate(1.08) brightness(1.02);
+}
+
+.booking-form-nav-primary:hover:not(:disabled)::before,
+.booking-form-nav-secondary:hover:not(:disabled)::before,
+.booking-form-nav-neutral:hover:not(:disabled)::before {
+  opacity: 1;
+  transform: translateX(70%) rotate(8deg);
+}
+
+.booking-form-nav-primary:disabled::before,
+.booking-form-nav-secondary:disabled::before,
+.booking-form-nav-neutral:disabled::before {
+  display: none;
+}
+
+.booking-form-nav-primary:disabled {
+  border-color: rgba(201, 162, 126, 0.28) !important;
+  background: linear-gradient(135deg, rgba(220, 164, 83, 0.34) 0%, rgba(191, 118, 47, 0.3) 52%, rgba(240, 196, 108, 0.36) 100%) !important;
+  color: rgba(95, 63, 47, 0.54) !important;
+  box-shadow: 0 5px 12px rgba(114, 76, 43, 0.08) !important;
+  filter: saturate(0.72) brightness(1.05);
+}
+
+.booking-step-progress-completed {
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-step-progress-completed::before {
+  position: absolute;
+  inset: -60% -35%;
+  content: "";
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 248, 215, 0.86) 48%, transparent 64%);
+  opacity: 0;
+  transform: translateX(-70%) rotate(8deg);
+  transition:
+    opacity 180ms ease,
+    transform 520ms ease;
+}
+
+button:hover .booking-step-progress-completed {
+  box-shadow:
+    0 8px 22px rgba(184, 111, 41, 0.36),
+    0 0 18px rgba(255, 209, 103, 0.42);
+  filter: saturate(1.12) brightness(1.04);
+}
+
+button:hover .booking-step-progress-completed::before {
+  opacity: 1;
+  transform: translateX(70%) rotate(8deg);
+}
+
+.booking-step-progress-completed > svg {
+  position: relative;
+  z-index: 1;
+}
+
+.booking-planner-control {
+  position: relative;
+  overflow: hidden;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  z-index: 1;
+}
+
+.booking-planner-control-label {
+  font-size: 11px !important;
+  line-height: 28px !important;
+}
+
+.booking-planner-control::before {
+  position: absolute;
+  inset: -60% -35%;
+  content: "";
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 248, 215, 0.78) 48%, transparent 64%);
+  opacity: 0;
+  transform: translateX(-70%) rotate(8deg);
+  transition:
+    opacity 180ms ease,
+    transform 520ms ease;
+  z-index: -1;
+}
+
+.booking-planner-mode-toggle .booking-planner-control::before {
+  display: none;
+}
+
+.booking-planner-control:hover {
+  box-shadow:
+    0 8px 20px rgba(184, 111, 41, 0.24),
+    0 0 16px rgba(255, 209, 103, 0.34);
+  filter: saturate(1.1) brightness(1.03);
+}
+
+.booking-planner-control:hover::before {
+  opacity: 1;
+  transform: translateX(70%) rotate(8deg);
+}
+
+.booking-planner-control-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d56a70 0%, #b84f58 56%, #e58b8f 100%);
+  border-color: rgba(153, 58, 65, 0.72);
+  color: #fff9f9;
+}
+
+.booking-layout-preview-scroll {
+  scrollbar-color: rgba(154, 112, 83, 0.28) transparent;
+  scrollbar-width: thin;
+}
+
+.booking-layout-preview-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.booking-layout-preview-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.booking-layout-preview-scroll::-webkit-scrollbar-thumb {
+  background: rgba(154, 112, 83, 0.22);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+.booking-layout-preview-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(154, 112, 83, 0.34);
+  background-clip: content-box;
 }
 
 @media (min-width: 768px) {
