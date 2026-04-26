@@ -52,9 +52,9 @@ export function ContextHelp({
       </Tooltip>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className={contentClassName}>
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
+          <DialogHeader className="pr-0">
+            <DialogTitle className="pr-10">{title}</DialogTitle>
+            <DialogDescription className="text-justify">{description}</DialogDescription>
           </DialogHeader>
           {children ? <div>{children}</div> : null}
         </DialogContent>

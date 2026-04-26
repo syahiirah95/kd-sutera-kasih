@@ -12,6 +12,8 @@ import {
 } from "@/components/planner/planner-constants";
 import { PlannerThreeDObject } from "@/components/planner/planner-three-d-object";
 import {
+  type PlannerItem,
+  type PlannerItemVariant,
   type PlannerPlacedItem,
   type PlannerThreeDCameraMode,
   type PlannerVariantSelections,
@@ -106,10 +108,13 @@ export function PlannerThreeDScene({
   cameraMode,
   canPlaceItem,
   canSelectItem,
+  disableControls,
   isMoveMode,
+  items,
   placedItems,
   selectedPlacedItemId,
   selectedVariantIdsByItemId,
+  variantsByItemId,
   onCanvasAction,
   onCanvasSelect,
   onItemMove,
@@ -117,10 +122,13 @@ export function PlannerThreeDScene({
   cameraMode: PlannerThreeDCameraMode;
   canPlaceItem: boolean;
   canSelectItem: boolean;
+  disableControls?: boolean;
   isMoveMode: boolean;
+  items: PlannerItem[];
   placedItems: PlannerPlacedItem[];
   selectedPlacedItemId: string | null;
   selectedVariantIdsByItemId: PlannerVariantSelections;
+  variantsByItemId: Record<string, PlannerItemVariant[]>;
   onCanvasAction: (x: number, y: number) => void;
   onCanvasSelect: (itemId: string | null) => void;
   onItemMove: (itemId: string, x: number, y: number) => void;
@@ -141,8 +149,9 @@ export function PlannerThreeDScene({
     <>
       <OrbitControls
         makeDefault
+        enabled={!disableControls}
         enablePan={false}
-        enableRotate={cameraMode === "perspective"}
+        enableRotate={!disableControls && cameraMode === "perspective"}
         minDistance={cameraMode === "perspective" ? 45 : 52}
         maxDistance={cameraMode === "perspective" ? 95 : 100}
         minPolarAngle={cameraMode === "perspective" ? 0.4 : 0}
@@ -183,7 +192,9 @@ export function PlannerThreeDScene({
           canSelect={canSelectItem}
           isSelected={selectedPlacedItemId === item.id}
           item={item}
+          items={items}
           selectedVariantId={selectedVariantIdsByItemId[item.itemId]}
+          variantsByItemId={variantsByItemId}
           onSelect={onCanvasSelect}
           onStartDrag={(itemId) => {
             if (!isMoveMode) {

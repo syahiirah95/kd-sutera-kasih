@@ -21,6 +21,7 @@ type BookingReviewStepProps = {
   reviewPageIndex: number;
   selectedEventType: string;
   selectedTimeRange: string;
+  selectedVenueBookingVideoSrc?: string;
   selectedVenueName: string;
   selectedVenuePricing?: {
     depositAmount: number;
@@ -134,6 +135,7 @@ export function BookingReviewStep({
   reviewPageIndex,
   selectedEventType,
   selectedTimeRange,
+  selectedVenueBookingVideoSrc,
   selectedVenueName,
   selectedVenuePricing,
 }: BookingReviewStepProps) {
@@ -261,16 +263,18 @@ export function BookingReviewStep({
         onEditStep={onEditStep}
       />
       <div className="relative h-52 overflow-hidden rounded-[var(--radius-sm)] border border-white/65 bg-white/50 shadow-[0_8px_20px_rgba(114,76,43,0.08)]">
-        <video
-          aria-label="Venue event preview"
-          className="absolute inset-0 size-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/api/media/venue-video" type="video/mp4" />
-        </video>
+        {selectedVenueBookingVideoSrc ? (
+          <video
+            aria-label="Venue event preview"
+            className="absolute inset-0 size-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={selectedVenueBookingVideoSrc} type="video/mp4" />
+          </video>
+        ) : null}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(52,38,29,0.04)_0%,rgba(52,38,29,0.2)_100%)]" />
       </div>
     </div>

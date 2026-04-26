@@ -104,12 +104,13 @@ export function Select({
         disabled={disabled}
         id={id}
         onClick={handleToggle}
+        suppressHydrationWarning
         type="button"
       >
         <span className="min-w-0 truncate">{selectedOption?.label}</span>
         <ChevronDown className="size-3.5 shrink-0 text-[#5f3f2f]" />
       </button>
-      <input name={name} type="hidden" value={selectedOption?.value ?? ""} />
+      <input name={name} suppressHydrationWarning type="hidden" value={selectedOption?.value ?? ""} />
       {isOpen ? (
         <div
           className={cn(
@@ -129,6 +130,7 @@ export function Select({
                 )}
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
+                suppressHydrationWarning
                 type="button"
               >
                 {option.label}

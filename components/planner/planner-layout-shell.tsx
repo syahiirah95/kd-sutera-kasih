@@ -3,19 +3,22 @@
 import { type ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { snapPlannerValue } from "@/components/planner/planner-constants";
-import { PLANNER_ITEMS, PLANNER_PRESETS, PRESET_PLACED_ITEMS } from "@/components/planner/planner-data";
+import { PLANNER_PRESETS, PRESET_PLACED_ITEMS } from "@/components/planner/planner-data";
 import { createPlannerVariantSelections } from "@/components/planner/planner-object-variants";
 import { PlannerPalette } from "@/components/planner/planner-palette";
 import { PlannerShellTabs } from "@/components/planner/planner-shell-tabs";
 import { PlannerThreeDView } from "@/components/planner/planner-three-d-view";
 import { PlannerToolbar } from "@/components/planner/planner-toolbar";
 import {
+  type PlannerItem,
+  type PlannerItemVariant,
   type PlannerPlacedItemsByPreset,
   type PlannerPlacedItem,
   type PlannerPresetId,
   type PlannerPreviewMode,
   type PlannerThreeDCameraMode,
 } from "@/components/planner/planner-types";
+import { buildDefaultPlannerLibrary } from "@/lib/planner/planner-library";
 import { cn } from "@/lib/utils";
 
 function createPlannerState(initialReceptionItems?: PlannerPlacedItem[]): PlannerPlacedItemsByPreset {
@@ -30,24 +33,26 @@ function createId() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-function createEnabledItemIds() {
-  return PLANNER_ITEMS.map((item) => item.id);
-}
+const DEFAULT_LIBRARY = buildDefaultPlannerLibrary();
 
 type PlannerLayoutShellProps = {
   compact?: boolean;
   controlsSlot?: ReactNode;
   initialReceptionItems?: PlannerPlacedItem[];
+  items?: PlannerItem[];
   singlePreset?: boolean;
   toolbarPlacement?: "floating" | "top";
+  variantsByItemId?: Record<string, PlannerItemVariant[]>;
 };
 
 export function PlannerLayoutShell({
   compact = false,
   controlsSlot,
   initialReceptionItems,
+  items = DEFAULT_LIBRARY.items,
   singlePreset = false,
   toolbarPlacement = "floating",
+  variantsByItemId = DEFAULT_LIBRARY.variantsByItemId,
 }: PlannerLayoutShellProps) {
   const [mode, setMode] = useState<PlannerPreviewMode>("2d");
   const [threeDCameraMode, setThreeDCameraMode] = useState<PlannerThreeDCameraMode>("perspective");
@@ -56,9 +61,9 @@ export function PlannerLayoutShell({
   const [isEditMode, setIsEditMode] = useState(false);
   const [isMoveMode, setIsMoveMode] = useState(false);
   const [selectedPlacedItemId, setSelectedPlacedItemId] = useState<string | null>(null);
-  const [enabledItemIds, setEnabledItemIds] = useState<string[]>(createEnabledItemIds);
+  const [enabledItemIds, setEnabledItemIds] = useState<string[]>(() => items.map((item) => item.id));
   const [selectedVariantIdsByItemId, setSelectedVariantIdsByItemId] = useState(
-    () => createPlannerVariantSelections(PLANNER_ITEMS),
+    () => createPlannerVariantSelections(items, variantsByItemId),
   );
   const initialPlannerState = useMemo(
     () => createPlannerState(initialReceptionItems),
@@ -77,7 +82,7 @@ export function PlannerLayoutShell({
   const selectedPlacedItem =
     visiblePlacedItems.find((item) => item.id === selectedPlacedItemId) ?? null;
   const activeItem = isEditMode && activeItemId && enabledItemIds.includes(activeItemId)
-    ? PLANNER_ITEMS.find((item) => item.id === activeItemId) ?? null
+    ? items.find((item) => item.id === activeItemId) ?? null
     : null;
 
   const handleModeChange = (nextMode: PlannerPreviewMode) => {
@@ -145,7 +150,7 @@ export function PlannerLayoutShell({
     }
 
     if (activeItemId) {
-      const itemDef = PLANNER_ITEMS.find((item) => item.id === activeItemId);
+      const itemDef = items.find((item) => item.id === activeItemId);
       if (!itemDef) {
         return;
       }
@@ -311,7 +316,8 @@ export function PlannerLayoutShell({
               activeItemId={activeItemId}
               compact={compact}
               enabledItemIds={enabledItemIds}
-              items={PLANNER_ITEMS}
+              items={items}
+              variantsByItemId={variantsByItemId}
               onSelectItem={(itemId) => {
                 handleModeChange("2d");
                 if (!enabledItemIds.includes(itemId)) {
@@ -336,6 +342,8 @@ export function PlannerLayoutShell({
               placedItems={visiblePlacedItems}
               selectedPlacedItemId={selectedPlacedItemId}
               selectedVariantIdsByItemId={selectedVariantIdsByItemId}
+              items={items}
+              variantsByItemId={variantsByItemId}
               onCanvasAction={handleCanvasAction}
               onCanvasSelect={(itemId) => {
                 if (!isEditMode) {
@@ -368,6 +376,8 @@ export function PlannerLayoutShell({
               placedItems={visiblePlacedItems}
               selectedPlacedItemId={selectedPlacedItemId}
               selectedVariantIdsByItemId={selectedVariantIdsByItemId}
+              items={items}
+              variantsByItemId={variantsByItemId}
               onCanvasAction={handleCanvasAction}
               onCanvasSelect={(itemId) => {
                 if (!isEditMode) {

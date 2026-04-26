@@ -3,7 +3,9 @@ import { PageShell } from "@/components/shared/page-shell";
 import { VenueSelectorList } from "@/components/venue/venue-selector-list";
 import { VenueStickyDetails } from "@/components/venue/venue-sticky-details";
 import { VenueStoryContent } from "@/components/venue/venue-story-content";
-import { getVenueBySlug } from "@/lib/data/venues";
+import { getVenuePageData } from "@/lib/supabase/venue-data";
+
+export const dynamic = "force-dynamic";
 
 type VenuePageProps = {
   searchParams: Promise<{
@@ -13,11 +15,11 @@ type VenuePageProps = {
 
 export default async function VenuePage({ searchParams }: VenuePageProps) {
   const params = await searchParams;
-  const venue = getVenueBySlug(params.venue);
+  const { activeVenue: venue, venues } = await getVenuePageData(params.venue);
 
   return (
     <>
-      <VenueSelectorList activeVenue={venue} />
+      <VenueSelectorList activeVenue={venue} venues={venues} />
 
       <main className="bg-[linear-gradient(180deg,#fff8ef_0%,#fffaf4_48%,#fff8ef_100%)]">
         <PageShell className="space-y-8 pb-16 pt-8 md:pt-10">
@@ -27,7 +29,7 @@ export default async function VenuePage({ searchParams }: VenuePageProps) {
                 gallery={(
                   <section className="space-y-5">
                     <h2 className="font-display text-2xl font-semibold leading-tight text-foreground md:text-3xl">Gallery</h2>
-                    <VenueGallery />
+                    <VenueGallery images={venue.gallery} />
                   </section>
                 )}
                 venue={venue}

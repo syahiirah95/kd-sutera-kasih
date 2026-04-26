@@ -7,7 +7,7 @@ export function VenueStickyDetails({
 }: Readonly<{
   venue: VenueRecord;
 }>) {
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(venue.address)}&output=embed`;
+  const mapSrc = venue.mapEmbedUrl ?? `https://www.google.com/maps?q=${encodeURIComponent(venue.address)}&output=embed`;
 
   return (
     <Card className="rounded-[var(--radius-sm)] lg:sticky lg:top-28">

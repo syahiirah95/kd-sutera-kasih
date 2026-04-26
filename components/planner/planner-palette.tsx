@@ -1,11 +1,5 @@
-import { useState } from "react";
-import { Check, ChevronDown } from "lucide-react";
-import {
-  getDefaultPlannerVariantId,
-  getPlannerItemVariants,
-  type PlannerObjectVariant,
-} from "@/components/planner/planner-object-variants";
-import { type PlannerItem } from "@/components/planner/planner-types";
+import { Check } from "lucide-react";
+import { type PlannerItem, type PlannerItemVariant } from "@/components/planner/planner-types";
 import { cn } from "@/lib/utils";
 
 type PlannerPaletteProps = {
@@ -13,42 +7,34 @@ type PlannerPaletteProps = {
   compact?: boolean;
   enabledItemIds: string[];
   items: PlannerItem[];
+  variantsByItemId: Record<string, PlannerItemVariant[]>;
   onSelectItem: (itemId: string) => void;
   onToggleItem: (itemId: string) => void;
   onVariantChange: (itemId: string, variantId: string) => void;
   selectedVariantIdsByItemId: Record<string, string>;
 };
 
-type PlannerPaletteOption = Pick<PlannerObjectVariant, "id" | "label"> & {
-  isFallback?: boolean;
-};
-
-function getPaletteOptions(item: PlannerItem): PlannerPaletteOption[] {
-  const variants = getPlannerItemVariants(item.id);
-
-  if (variants.length > 0) {
-    return variants;
-  }
-
-  return [{ id: `default-${item.id}`, isFallback: true, label: item.label }];
-}
-
 export function PlannerPalette({
   activeItemId,
   compact = false,
   enabledItemIds,
   items,
+  variantsByItemId: _variantsByItemId,
   onSelectItem,
   onToggleItem,
-  onVariantChange,
-  selectedVariantIdsByItemId,
+  onVariantChange: _onVariantChange,
+  selectedVariantIdsByItemId: _selectedVariantIdsByItemId,
 }: PlannerPaletteProps) {
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  void _variantsByItemId;
+  void _onVariantChange;
+  void _selectedVariantIdsByItemId;
   const furnitureItems = items.filter((item) => item.category === "furniture");
   const decorItems = items.filter((item) => item.category === "decor");
+  const companionItems = items.filter((item) => item.category === "companion");
   const sections = [
     ["Furniture", furnitureItems],
     ["Decor & Setup", decorItems],
+    ["Butterfly Companion", companionItems],
   ] as const;
   const dropdownClassName =
     "booking-planner-control flex h-7 w-[118px] shrink-0 items-center justify-between rounded-lg border border-[#c8893e]/55 bg-[linear-gradient(135deg,#dca453_0%,#bf762f_52%,#f0c46c_100%)] px-2 !text-[11px] font-semibold !leading-none text-white shadow-[0_8px_20px_rgba(184,111,41,0.22)]";
@@ -67,13 +53,7 @@ export function PlannerPalette({
           </p>
           <div className="grid grid-cols-1 overflow-hidden rounded-[var(--radius-sm)] border border-border/70 bg-white/75">
             {sectionItems.map((item, itemIndex) => {
-              const options = getPaletteOptions(item);
-              const selectedVariantId =
-                selectedVariantIdsByItemId[item.id] ?? getDefaultPlannerVariantId(item.id);
               const isEnabled = enabledItemIds.includes(item.id);
-              const selectedOption =
-                options.find((option) => option.id === selectedVariantId) ?? options[0];
-              const isExpanded = expandedItemId === item.id;
 
               return (
                 <div
@@ -113,54 +93,16 @@ export function PlannerPalette({
                       </span>
                     </button>
 
-                    <button
-                      type="button"
-                      aria-expanded={isExpanded}
-                      className={cn(dropdownClassName, compact && "w-[92px] !text-[10px]")}
-                      onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
+                    <span
+                      className={cn(
+                        dropdownClassName,
+                        "pointer-events-none justify-center",
+                        compact && "w-[92px] !text-[10px]",
+                      )}
                     >
-                      <span className="block min-w-0 flex-1 truncate text-left">
-                        {selectedOption?.label ?? item.label}
-                      </span>
-                      <ChevronDown className={cn("ml-1 size-3 shrink-0 transition", isExpanded && "rotate-180")} />
-                    </button>
+                      Asset
+                    </span>
                   </div>
-
-                  {isExpanded ? (
-                    <div className={compact ? "mt-2 space-y-1.5" : "mt-3 space-y-2"}>
-                      {options.map((option) => {
-                        const isSelected = selectedOption?.id === option.id;
-
-                        return (
-                          <button
-                            key={option.id}
-                            type="button"
-                            onClick={() => {
-                              if (!option.isFallback) {
-                                onVariantChange(item.id, option.id);
-                              }
-                              if (!isEnabled) {
-                                onToggleItem(item.id);
-                              }
-                              onSelectItem(item.id);
-                            }}
-                            className={cn(
-                              "flex h-11 w-full items-center gap-2 rounded-lg px-2 text-left text-[11px] font-medium leading-none transition",
-                              isSelected
-                                ? "bg-[#ecfdf3] text-[#166534]"
-                                : "bg-secondary/55 text-muted-foreground hover:bg-secondary hover:text-foreground",
-                            )}
-                          >
-                            <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-[#16a34a]/30 bg-white text-[#16a34a]">
-                              <Check className={cn("size-3", isSelected ? "opacity-100" : "opacity-0")} />
-                            </span>
-                            <span className="h-7 w-10 shrink-0 rounded-md border border-border/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(231,221,210,0.75)_100%)]" />
-                            <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : null}
                 </div>
               );
             })}

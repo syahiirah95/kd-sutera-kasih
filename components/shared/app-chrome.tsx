@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { AuthDialog } from "@/components/auth/auth-dialog";
 import { AppButterflyCompanion } from "@/components/shared/app-butterfly-companion";
 import { AppFooter } from "@/components/shared/app-footer";
 import { AppHeader } from "@/components/shared/app-header";
@@ -12,6 +14,9 @@ export function AppChrome({
       <AppHeader />
       <div className="pb-20 lg:pb-0">{children}</div>
       <AppFooter />
+      <Suspense fallback={null}>
+        <AuthDialog />
+      </Suspense>
       <AppButterflyCompanion />
     </div>
   );

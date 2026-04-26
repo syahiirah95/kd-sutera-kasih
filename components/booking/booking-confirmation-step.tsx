@@ -4,11 +4,34 @@ import { type BookingFormData } from "@/components/booking/booking-request-types
 import { Button } from "@/components/ui/button";
 
 type BookingConfirmationStepProps = {
+  bookingReference?: string;
   formData: BookingFormData;
   onStartNewRequest: () => void;
   paymentMethod: string;
   selectedEventType: string;
   selectedTimeRange: string;
+  selectedVenueBookingVideoSrc?: string;
+  selectedVenueContactPhone: string;
+  selectedVenueName: string;
+  selectedVenuePricing?: {
+    depositAmount: number;
+    furniturePackage: number;
+    hallPackage: number;
+    propsPackage: number;
+  };
+};
+
+export type BookingReceiptDownloadDetails = {
+  bookingReference?: string;
+  fileName?: string;
+  formData: BookingFormData;
+  paymentMethod: string;
+  paymentSectionTitle?: string;
+  paymentStatusLabel?: string;
+  receiptTitle?: string;
+  selectedEventType: string;
+  selectedTimeRange: string;
+  selectedVenueBookingVideoSrc?: string;
   selectedVenueContactPhone: string;
   selectedVenueName: string;
   selectedVenuePricing?: {
@@ -90,10 +113,15 @@ function pdfSection(title: string, y: number) {
   ];
 }
 
-function downloadBookingPdf(details: Omit<BookingConfirmationStepProps, "onStartNewRequest">) {
+export function downloadBookingPdf(details: BookingReceiptDownloadDetails) {
   const {
+    bookingReference,
+    fileName,
     formData,
     paymentMethod,
+    paymentSectionTitle,
+    paymentStatusLabel,
+    receiptTitle,
     selectedEventType,
     selectedTimeRange,
     selectedVenueContactPhone,
@@ -112,8 +140,8 @@ function downloadBookingPdf(details: Omit<BookingConfirmationStepProps, "onStart
     pdfRect(36, 54, 523, 706, [1, 0.99, 0.96]),
     pdfRect(36, 724, 523, 36, [0.79, 0.49, 0.19]),
     pdfText("Sutera Kasih Hall", 58, 736, { color: [1, 1, 1], font: "F2", size: 21 }),
-    pdfText("Booking Request Receipt", 365, 740, { color: [1, 0.94, 0.84], font: "F2", size: 12 }),
-    pdfText("Reference: KD-SK-2026-001", 58, 706, { color: [0.55, 0.32, 0.17], font: "F2", size: 10 }),
+    pdfText(receiptTitle || "Booking Request Receipt", 365, 740, { color: [1, 0.94, 0.84], font: "F2", size: 12 }),
+    pdfText(`Reference: ${bookingReference || "Pending reference"}`, 58, 706, { color: [0.55, 0.32, 0.17], font: "F2", size: 10 }),
     pdfText("Status: Pending venue review", 382, 706, { color: [0.55, 0.32, 0.17], font: "F2", size: 10 }),
     ...pdfSection("Event", 675),
     ...pdfRows(
@@ -156,12 +184,12 @@ function downloadBookingPdf(details: Omit<BookingConfirmationStepProps, "onStart
     pdfRect(58, 240, 479, 34, [0.96, 0.88, 0.74]),
     pdfText("Estimated total", 74, 253, { color: [0.45, 0.25, 0.11], font: "F2", size: 12 }),
     pdfText(formatRinggit(estimatedTotal), 440, 253, { color: [0.45, 0.25, 0.11], font: "F2", size: 14 }),
-    ...pdfSection("Payment Deposit", 212),
+    ...pdfSection(paymentSectionTitle || "Payment Deposit", 212),
     ...pdfRows(
       [
         ["Payment method", paymentMethod],
         ["Deposit now", formatRinggit(pricing.depositAmount)],
-        ["Payment status", "Mock payment pending"],
+        ["Payment status", paymentStatusLabel || "Mock payment pending"],
       ],
       189,
     ),
@@ -205,26 +233,30 @@ function downloadBookingPdf(details: Omit<BookingConfirmationStepProps, "onStart
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "sutera-kasih-booking-request.pdf";
+  link.download = fileName || "sutera-kasih-booking-request.pdf";
   link.click();
   URL.revokeObjectURL(url);
 }
 
 export function BookingConfirmationStep({
+  bookingReference,
   formData,
   onStartNewRequest,
   paymentMethod,
   selectedEventType,
   selectedTimeRange,
+  selectedVenueBookingVideoSrc,
   selectedVenueContactPhone,
   selectedVenueName,
   selectedVenuePricing,
 }: BookingConfirmationStepProps) {
   const pdfDetails = {
     formData,
+    bookingReference,
     paymentMethod,
     selectedEventType,
     selectedTimeRange,
+    selectedVenueBookingVideoSrc,
     selectedVenueContactPhone,
     selectedVenueName,
     selectedVenuePricing,
@@ -233,19 +265,26 @@ export function BookingConfirmationStep({
   return (
     <div className="flex flex-col items-center gap-3 pt-2">
       <div className="relative h-32 w-full max-w-lg overflow-hidden rounded-[var(--radius-sm)] shadow-[0_8px_20px_rgba(114,76,43,0.08)]">
-        <video
-          aria-label="Venue event preview"
-          className="absolute inset-0 size-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/api/media/venue-video" type="video/mp4" />
-        </video>
+        {selectedVenueBookingVideoSrc ? (
+          <video
+            aria-label="Venue event preview"
+            className="absolute inset-0 size-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={selectedVenueBookingVideoSrc} type="video/mp4" />
+          </video>
+        ) : null}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(52,38,29,0.02)_0%,rgba(52,38,29,0.16)_100%)]" />
       </div>
       <div className="flex flex-wrap items-center justify-center gap-2">
+        {bookingReference ? (
+          <p className="w-full text-center text-xs font-semibold uppercase tracking-[0.16em] text-[#8d542d]">
+            Reference {bookingReference}
+          </p>
+        ) : null}
         <Button
           className={CONFIRM_ACTION_BUTTON_CLASS}
           onClick={() => downloadBookingPdf(pdfDetails)}

@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { VENUE_GALLERY } from "@/lib/data/venue";
+import { type VenueMediaRecord } from "@/lib/data/venues";
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
@@ -24,13 +24,26 @@ function clampZoom(value: number) {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
 }
 
-export function VenueGallery() {
+export function VenueGallery({
+  images = [],
+}: Readonly<{
+  images?: VenueMediaRecord[];
+}>) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const dragStartRef = useRef<Point>({ x: 0, y: 0 });
-  const activeImage = VENUE_GALLERY[activeIndex] ?? VENUE_GALLERY[0];
+  const galleryImages = images;
+  const activeImage = galleryImages[activeIndex] ?? galleryImages[0];
+
+  if (!galleryImages.length) {
+    return (
+      <div className="rounded-[var(--radius-sm)] border border-dashed border-[#d49b6a]/35 bg-white/40 px-4 py-10 text-center text-sm leading-7 text-[#6f5648]">
+        Gallery media belum tersedia untuk venue ini.
+      </div>
+    );
+  }
 
   function resetView() {
     setIsDragging(false);
@@ -93,19 +106,19 @@ export function VenueGallery() {
   function showPreviousImage() {
     resetView();
     setActiveIndex((currentIndex) => (
-      currentIndex - 1 + VENUE_GALLERY.length
-    ) % VENUE_GALLERY.length);
+      currentIndex - 1 + galleryImages.length
+    ) % galleryImages.length);
   }
 
   function showNextImage() {
     resetView();
-    setActiveIndex((currentIndex) => (currentIndex + 1) % VENUE_GALLERY.length);
+    setActiveIndex((currentIndex) => (currentIndex + 1) % galleryImages.length);
   }
 
   return (
     <Dialog>
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {VENUE_GALLERY.map((image, index) => (
+        {galleryImages.map((image, index) => (
           <DialogTrigger asChild key={image.src}>
             <button
               aria-label={`View larger image: ${image.alt}`}
@@ -153,7 +166,7 @@ export function VenueGallery() {
               src={activeImage.src}
             />
           </div>
-          {VENUE_GALLERY.length > 1 ? (
+          {galleryImages.length > 1 ? (
             <>
               <button
                 aria-label="Previous gallery image"
@@ -173,7 +186,7 @@ export function VenueGallery() {
               </button>
               <div className="absolute inset-x-0 bottom-3 flex justify-center">
                 <div className="flex items-center gap-2 rounded-full border border-white/25 bg-black/68 px-3 py-2 backdrop-blur">
-                  {VENUE_GALLERY.map((image, index) => (
+                  {galleryImages.map((image, index) => (
                     <button
                       aria-label={`Show gallery image ${index + 1}`}
                       className={`size-2 rounded-full transition ${

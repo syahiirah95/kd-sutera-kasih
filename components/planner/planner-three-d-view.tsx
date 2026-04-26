@@ -8,22 +8,29 @@ import { PlannerThreeDScene } from "@/components/planner/planner-three-d-scene";
 import { PlannerToolbar } from "@/components/planner/planner-toolbar";
 import {
   type PlannerItem,
+  type PlannerItemVariant,
   type PlannerPlacedItem,
   type PlannerThreeDCameraMode,
   type PlannerVariantSelections,
 } from "@/components/planner/planner-types";
+import { cn } from "@/lib/utils";
 
 type PlannerThreeDViewProps = {
   activeItem: PlannerItem | null;
   cameraModeOverride?: PlannerThreeDCameraMode;
   compact?: boolean;
+  disableControls?: boolean;
   hideToolbar?: boolean;
   isEditMode: boolean;
   isMoveMode: boolean;
+  lowPower?: boolean;
   onCameraModeChange?: (cameraMode: PlannerThreeDCameraMode) => void;
+  items: PlannerItem[];
   placedItems: PlannerPlacedItem[];
   selectedPlacedItemId: string | null;
   selectedVariantIdsByItemId: PlannerVariantSelections;
+  variantsByItemId: Record<string, PlannerItemVariant[]>;
+  viewportClassName?: string;
   onCanvasAction: (x: number, y: number) => void;
   onCanvasSelect: (itemId: string | null) => void;
   onClearSelection: () => void;
@@ -41,13 +48,18 @@ export function PlannerThreeDView({
   activeItem,
   cameraModeOverride,
   compact = false,
+  disableControls = false,
   hideToolbar = false,
   isEditMode,
   isMoveMode,
+  items,
+  lowPower = false,
   onCameraModeChange,
   placedItems,
   selectedPlacedItemId,
   selectedVariantIdsByItemId,
+  variantsByItemId,
+  viewportClassName,
   onCanvasAction,
   onCanvasSelect,
   onClearSelection,
@@ -68,7 +80,14 @@ export function PlannerThreeDView({
   const editableSelectedPlacedItemId = isEditMode ? selectedPlacedItemId : null;
 
   return (
-    <div className={compact ? "relative h-[240px] min-w-0 flex-1 overflow-hidden bg-gradient-to-b from-amber-50 to-stone-100" : "relative h-[540px] min-w-0 flex-1 overflow-hidden bg-gradient-to-b from-amber-50 to-stone-100"}>
+    <div
+      className={cn(
+        compact
+          ? "relative h-[240px] min-w-0 flex-1 overflow-hidden bg-gradient-to-b from-amber-50 to-stone-100"
+          : "relative h-[540px] min-w-0 flex-1 overflow-hidden bg-gradient-to-b from-amber-50 to-stone-100",
+        viewportClassName,
+      )}
+    >
       {!hideToolbar ? (
         <PlannerToolbar
           canClearSelection={Boolean(isEditMode && (activeItem || selectedPlacedItemId || isMoveMode))}
@@ -103,16 +122,22 @@ export function PlannerThreeDView({
         <Canvas
           key={cameraMode}
           camera={cameraConfig}
+          dpr={lowPower ? [1, 1] : [1, 1.5]}
+          frameloop={lowPower ? "demand" : "always"}
+          gl={{ alpha: true, antialias: !lowPower, powerPreference: lowPower ? "low-power" : "high-performance" }}
           shadows={{ type: PCFShadowMap }}
         >
           <PlannerThreeDScene
             cameraMode={cameraMode}
             canPlaceItem={Boolean(isEditMode && activeItem)}
             canSelectItem={isEditMode}
+            disableControls={disableControls}
             isMoveMode={editableMoveMode}
+            items={items}
             placedItems={placedItems}
             selectedPlacedItemId={editableSelectedPlacedItemId}
             selectedVariantIdsByItemId={selectedVariantIdsByItemId}
+            variantsByItemId={variantsByItemId}
             onCanvasAction={onCanvasAction}
             onCanvasSelect={onCanvasSelect}
             onItemMove={onItemMove}

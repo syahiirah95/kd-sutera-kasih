@@ -16,9 +16,11 @@ import { EVENT_TYPES, OPERATING_HOURS } from "@/lib/constants/booking";
 
 type BookingEventDetailsStepProps = {
   formData: BookingFormData;
+  selectedDateUnavailable: boolean;
   selectedTimeRange: string;
   timeRangeIsValid: boolean;
   today: string;
+  unavailableDateValues: ReadonlySet<string>;
   updateField: (field: keyof BookingFormData, value: string) => void;
   venueOptions: ReadonlyArray<{
     label: string;
@@ -90,11 +92,13 @@ function BookingDatePicker({
   id,
   min,
   onChange,
+  unavailableDateValues,
   value,
 }: Readonly<{
   id: string;
   min: string;
   onChange: (value: string) => void;
+  unavailableDateValues: ReadonlySet<string>;
   value: string;
 }>) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -192,7 +196,7 @@ function BookingDatePicker({
           <div className="mt-1 grid grid-cols-7 gap-0.5">
             {days.map((day) => {
               const isSelected = day.value === value;
-              const isDisabled = day.value < min;
+              const isDisabled = day.value < min || unavailableDateValues.has(day.value);
 
               return (
                 <button
@@ -306,9 +310,11 @@ function BookingTimePicker({
 
 export function BookingEventDetailsStep({
   formData,
+  selectedDateUnavailable,
   selectedTimeRange,
   timeRangeIsValid,
   today,
+  unavailableDateValues,
   updateField,
   venueOptions,
 }: BookingEventDetailsStepProps) {
@@ -363,9 +369,15 @@ export function BookingEventDetailsStep({
             <BookingDatePicker
               id="event-date"
               min={today}
+              unavailableDateValues={unavailableDateValues}
               value={formData.eventDate}
               onChange={(value) => updateField("eventDate", value)}
             />
+            {selectedDateUnavailable ? (
+              <p className="text-[11px] font-semibold text-destructive">
+                This hall already has a pending or approved booking on that date. Please choose another date.
+              </p>
+            ) : null}
           </div>
           <div className="grid gap-1.5 rounded-[var(--radius-sm)] border border-border/70 bg-white/45 p-3">
             <div className="flex items-center gap-2">

@@ -130,7 +130,8 @@ export function BookingStepperButterfly({
     <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none left-0 top-0 hidden transition-transform lg:block",
+        "pointer-events-none left-0 top-0 transition-transform",
+        positionMode === "fixed" ? "block" : "hidden lg:block",
         positionMode === "fixed" ? "z-[260]" : "z-30",
         positionMode === "fixed" ? "fixed" : "absolute",
       )}

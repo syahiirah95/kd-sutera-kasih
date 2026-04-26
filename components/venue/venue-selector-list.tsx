@@ -7,11 +7,12 @@ import engagementHero from "@/assets/event-gallery/engagement.png";
 import graduationHero from "@/assets/event-gallery/graduation.png";
 import weddingHero from "@/assets/event-gallery/wedding.png";
 import { Button } from "@/components/ui/button";
-import { VENUES, type VenueRecord } from "@/lib/data/venues";
+import { type VenueRecord } from "@/lib/data/venues";
 import { cn } from "@/lib/utils";
 
 const VENUE_SELECTOR_BUTTON_CLASS =
   "booking-form-nav-primary !h-7 !w-24 !rounded-lg !border !border-[#c8893e]/55 !bg-[linear-gradient(135deg,#dca453_0%,#bf762f_52%,#f0c46c_100%)] !px-2 !text-[11px] !font-semibold !leading-none !text-white shadow-[0_8px_20px_rgba(184,111,41,0.28)]";
+const DB_ONLY_MEDIA_VENUE_SLUG = "sutera-kasih-cinta";
 
 const VENUE_HERO_IMAGES: Record<string, StaticImageData> = {
   "sutera-kasih-anggun": weddingHero,
@@ -31,22 +32,30 @@ const VENUE_BADGES: Record<string, string> = {
 
 export function VenueSelectorList({
   activeVenue,
+  venues,
 }: Readonly<{
   activeVenue: VenueRecord;
+  venues: VenueRecord[];
 }>) {
-  const heroImage = VENUE_HERO_IMAGES[activeVenue.slug] ?? weddingHero;
-  const venueBadge = VENUE_BADGES[activeVenue.slug] ?? "Featured Venue";
+  const heroImage =
+    activeVenue.slug === DB_ONLY_MEDIA_VENUE_SLUG
+      ? activeVenue.heroImageSrc
+      : activeVenue.heroImageSrc ?? VENUE_HERO_IMAGES[activeVenue.slug] ?? weddingHero;
+  const venueBadge = activeVenue.badgeLabel ?? VENUE_BADGES[activeVenue.slug] ?? "Featured Venue";
 
   return (
     <section className="relative isolate min-h-[30rem] overflow-hidden border-b border-white/55 shadow-[0_18px_44px_rgba(114,76,43,0.12)]">
-      <Image
-        fill
-        priority
-        alt={`${activeVenue.name} venue atmosphere`}
-        className="object-cover"
-        sizes="100vw"
-        src={heroImage}
-      />
+      {heroImage ? (
+        <Image
+          fill
+          priority
+          alt={`${activeVenue.name} venue atmosphere`}
+          className="object-cover"
+          sizes="100vw"
+          src={heroImage}
+          unoptimized={typeof heroImage === "string"}
+        />
+      ) : null}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,247,237,0.94)_0%,rgba(255,247,237,0.78)_38%,rgba(255,247,237,0.34)_72%,rgba(52,38,29,0.1)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_22%,rgba(255,246,225,0.72)_0%,rgba(255,246,225,0)_38%)]" />
 
@@ -97,7 +106,7 @@ export function VenueSelectorList({
       >
         <div className="mx-auto flex w-[min(100%,80rem)] justify-center md:px-6">
           <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/58 px-3 py-2 shadow-[0_14px_34px_rgba(114,76,43,0.14)] backdrop-blur-xl">
-            {VENUES.map((venue, index) => {
+            {venues.map((venue, index) => {
               const isActive = venue.slug === activeVenue.slug;
 
               return (
@@ -113,7 +122,7 @@ export function VenueSelectorList({
                   href={`/venue?venue=${venue.slug}`}
                 >
                   <span className="sr-only">
-                    {index + 1} of {VENUES.length}
+                    {index + 1} of {venues.length}
                   </span>
                 </Link>
               );

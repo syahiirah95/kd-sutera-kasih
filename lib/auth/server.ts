@@ -56,12 +56,18 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     .map((segment: string) => segment[0]?.toUpperCase() ?? "")
     .join("");
   const providers = ((user.app_metadata?.providers as string[] | undefined) ?? ["password"])
-    .map((provider) => (provider === "google" ? "google" : "password")) as AuthProvider[];
+    .map(() => "password") as AuthProvider[];
+  const phoneNumber =
+    user.phone ??
+    user.user_metadata?.phone ??
+    user.user_metadata?.phone_number ??
+    user.user_metadata?.phoneNumber;
 
   return {
     displayName: fullName,
     email: user.email,
     initials: initials || "KD",
+    phoneNumber,
     providers,
   };
 }

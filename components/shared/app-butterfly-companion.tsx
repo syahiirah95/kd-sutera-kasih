@@ -13,14 +13,38 @@ const DEFAULT_FLY_DURATION_MS = 1800;
 const FLY_SETTLE_BUFFER_MS = 220;
 
 function usesDocumentAnchoredButterfly(pathname: string) {
-  return pathname === "/venue" || pathname === "/privacy" || pathname === "/terms";
+  return pathname === "/venue" || pathname === "/privacy" || pathname === "/terms" || pathname === "/login" || pathname === "/signup" || pathname === "/disclaimer" || pathname === "/my-bookings" || pathname === "/account" || pathname === "/admin";
 }
 
 function shouldFaceAnchorText(pathname: string) {
-  return pathname === "/venue" || pathname === "/privacy" || pathname === "/terms";
+  return pathname === "/venue" || pathname === "/privacy" || pathname === "/terms" || pathname === "/login" || pathname === "/signup" || pathname === "/disclaimer" || pathname === "/my-bookings" || pathname === "/account" || pathname === "/admin";
+}
+
+function isLeftDialogTitleAnchor(element: HTMLElement) {
+  return (
+    element.dataset.butterflyAnchor === "account-info-title" ||
+    element.dataset.butterflyAnchor === "admin-dialog-title" ||
+    element.dataset.butterflyAnchor === "booking-details-title" ||
+    element.dataset.butterflyAnchor === "hall-availability-title" ||
+    element.dataset.butterflyAnchor === "login-title" ||
+    element.dataset.butterflyAnchor === "signup-title" ||
+    element.dataset.butterflyAnchor === "payment-dialog-title"
+  );
+}
+
+function isDialogAnchorElement(element: HTMLElement) {
+  return Boolean(element.closest("[role='dialog']"));
 }
 
 function findAnchor(pathname: string): HTMLElement | null {
+  const dialogAnchor = document.querySelector<HTMLElement>(
+    "[role='dialog'] [data-butterfly-anchor='account-info-title'], [role='dialog'] [data-butterfly-anchor='admin-dialog-title'], [role='dialog'] [data-butterfly-anchor='booking-details-title'], [role='dialog'] [data-butterfly-anchor='hall-availability-title'], [role='dialog'] [data-butterfly-anchor='login-title'], [role='dialog'] [data-butterfly-anchor='signup-title'], [role='dialog'] [data-butterfly-anchor='payment-dialog-title']",
+  );
+
+  if (dialogAnchor) {
+    return dialogAnchor;
+  }
+
   if (pathname === "/booking") {
     const dialogAnchor = document.querySelector<HTMLElement>("[data-butterfly-anchor='layout-preview-title']");
 
@@ -35,8 +59,43 @@ function findAnchor(pathname: string): HTMLElement | null {
     return document.querySelector<HTMLElement>("[data-butterfly-anchor='venue-title']");
   }
 
-  if (pathname === "/privacy" || pathname === "/terms") {
-    return document.querySelector<HTMLElement>("[data-butterfly-anchor='legal-title']");
+  if (pathname === "/login") {
+    return document.querySelector<HTMLElement>("[data-butterfly-anchor='login-title']");
+  }
+
+  if (pathname === "/signup") {
+    return document.querySelector<HTMLElement>("[data-butterfly-anchor='signup-title']");
+  }
+
+  if (pathname === "/my-bookings" || pathname === "/account") {
+    return document.querySelector<HTMLElement>("[data-butterfly-anchor='my-bookings-title']");
+  }
+
+  if (pathname === "/admin" || pathname === "/disclaimer" || pathname === "/privacy" || pathname === "/terms") {
+    const pageTitleAnchor =
+      pathname === "/admin"
+        ? "admin-title"
+        : pathname === "/disclaimer"
+        ? "disclaimer-title"
+        : "legal-page-title";
+    const pageAnchors = Array.from(
+      document.querySelectorAll<HTMLElement>(`[data-butterfly-anchor='${pageTitleAnchor}'], [data-butterfly-anchor='section']`),
+    );
+
+    const targetY = 150;
+    const visibleAnchor =
+      pageAnchors
+        .filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.bottom > 88 && rect.top < window.innerHeight * 0.72;
+        })
+        .sort((left, right) => {
+          const leftDistance = Math.abs(left.getBoundingClientRect().top - targetY);
+          const rightDistance = Math.abs(right.getBoundingClientRect().top - targetY);
+          return leftDistance - rightDistance;
+        })[0] ?? pageAnchors[0];
+
+    return visibleAnchor ?? null;
   }
 
   const sectionAnchors = Array.from(
@@ -83,10 +142,36 @@ function getAnchorPoint(pathname: string, element: HTMLElement): Point {
     };
   }
 
+  if (isLeftDialogTitleAnchor(element)) {
+    return {
+      x: rect.left - 18,
+      y: rect.top + rect.height / 2 - 6,
+    };
+  }
+
+  if (element.dataset.butterflyAnchor === "my-bookings-title") {
+    return {
+      x: rect.right + 18,
+      y: rect.top + rect.height / 2 - 6,
+    };
+  }
+
   return {
     x: rect.right + 22,
     y: rect.top + rect.height / 2 - 10,
   };
+}
+
+function getAnchorRestingDirection(pathname: string, element: HTMLElement): -1 | 1 {
+  if (pathname === "/booking" || isLeftDialogTitleAnchor(element)) {
+    return 1;
+  }
+
+  if (shouldFaceAnchorText(pathname)) {
+    return -1;
+  }
+
+  return 1;
 }
 
 function hasMeaningfulMovement(current: Point | null, next: Point) {
@@ -98,7 +183,9 @@ function hasMeaningfulMovement(current: Point | null, next: Point) {
 }
 
 function getRenderPoint(pathname: string, point: Point): Point {
-  if (!usesDocumentAnchoredButterfly(pathname)) {
+  const anchor = findAnchor(pathname);
+
+  if (!usesDocumentAnchoredButterfly(pathname) || (anchor && isDialogAnchorElement(anchor))) {
     return point;
   }
 
@@ -162,6 +249,8 @@ export function AppButterflyCompanion() {
   const hasEnteredRef = useRef(false);
   const renderPointRef = useRef<Point | null>(null);
   const [anchorPoint, setAnchorPoint] = useState<Point | null>(null);
+  const [anchorRestingDirection, setAnchorRestingDirection] = useState<-1 | 1>(1);
+  const [isDialogAnchor, setIsDialogAnchor] = useState(false);
   const [flightDurationMs, setFlightDurationMs] = useState(DEFAULT_FLY_DURATION_MS);
   const [flightDirection, setFlightDirection] = useState<-1 | 1>(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -199,11 +288,7 @@ export function AppButterflyCompanion() {
 
       if (!startPoint) {
         setRenderedPoint(nextPoint);
-        if (pathname === "/booking") {
-          setFlightDirection(1);
-        } else if (shouldFaceAnchorText(pathname)) {
-          setFlightDirection(-1);
-        }
+        setFlightDirection(anchorRestingDirection);
         return;
       }
 
@@ -243,16 +328,12 @@ export function AppButterflyCompanion() {
         flightFrameRef.current = null;
         setRenderedPoint(nextPoint);
 
-        if (pathname === "/booking") {
-          window.setTimeout(() => setFlightDirection(1), 180);
-        } else if (shouldFaceAnchorText(pathname)) {
-          window.setTimeout(() => setFlightDirection(-1), 180);
-        }
+        window.setTimeout(() => setFlightDirection(anchorRestingDirection), 180);
       };
 
       flightFrameRef.current = window.requestAnimationFrame(animate);
     },
-    [cancelFlightAnimation, pathname, setRenderedPoint, startFlying],
+    [anchorRestingDirection, cancelFlightAnimation, setRenderedPoint, startFlying],
   );
 
   const refreshAnchor = useCallback(() => {
@@ -262,6 +343,8 @@ export function AppButterflyCompanion() {
       return;
     }
 
+    setIsDialogAnchor(isDialogAnchorElement(anchor));
+    setAnchorRestingDirection(getAnchorRestingDirection(pathname, anchor));
     const nextPoint = getRenderPoint(pathname, getAnchorPoint(pathname, anchor));
     setAnchorPoint((current) => (hasMeaningfulMovement(current, nextPoint) ? nextPoint : current));
   }, [pathname]);
@@ -282,7 +365,7 @@ export function AppButterflyCompanion() {
 
     const handleViewportChange = () => window.requestAnimationFrame(refreshAnchor);
     const handleScroll = () => {
-      if (usesDocumentAnchoredButterfly(pathname)) {
+      if (usesDocumentAnchoredButterfly(pathname) && !isDialogAnchor) {
         return;
       }
 
@@ -298,7 +381,7 @@ export function AppButterflyCompanion() {
       window.removeEventListener("resize", handleViewportChange);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [pathname, refreshAnchor]);
+  }, [isDialogAnchor, pathname, refreshAnchor]);
 
   useEffect(() => {
     if (!anchorPoint || isDragging) {
@@ -411,7 +494,7 @@ export function AppButterflyCompanion() {
       flightDirection={flightDirection}
       isPathControlled
       onGrabStart={handleGrabStart}
-      positionMode={usesDocumentAnchoredButterfly(pathname) ? "absolute" : "fixed"}
+      positionMode={usesDocumentAnchoredButterfly(pathname) && !isDialogAnchor ? "absolute" : "fixed"}
       x={renderPoint.x}
       y={renderPoint.y}
     />

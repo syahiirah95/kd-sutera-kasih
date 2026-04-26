@@ -1,6 +1,7 @@
 "use client";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ToastProvider } from "@/components/ui/toast";
 
 const UPSTREAM_THREE_WARNINGS = [
   "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.",
@@ -38,5 +39,9 @@ export function AppProviders({
 }>) {
   installThreeWarningFilter();
 
-  return <TooltipProvider delayDuration={150}>{children}</TooltipProvider>;
+  return (
+    <TooltipProvider delayDuration={150}>
+      <ToastProvider>{children}</ToastProvider>
+    </TooltipProvider>
+  );
 }

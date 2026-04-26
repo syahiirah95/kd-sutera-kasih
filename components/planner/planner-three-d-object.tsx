@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import { Box3, Vector3 } from "three";
 import { Clone, useGLTF } from "@react-three/drei";
 import { HALL_DEPTH, HALL_WIDTH, mapPlannerXToWorld, mapPlannerYToWorld } from "@/components/planner/planner-constants";
-import { PLANNER_ITEMS } from "@/components/planner/planner-data";
-import { PLANNER_MODEL_CONFIG } from "@/components/planner/planner-model-config";
 import { resolvePlannerItemVisual } from "@/components/planner/planner-object-variants";
-import { type PlannerPlacedItem } from "@/components/planner/planner-types";
-import { getPlannerModelAssetUrl } from "@/lib/constants/planner-assets";
+import { type PlannerItem, type PlannerItemVariant, type PlannerPlacedItem } from "@/components/planner/planner-types";
+import {
+  LOCAL_PLANNER_MODEL_FILENAMES,
+  type PlannerModelFilename,
+  getPlannerModelAssetUrl,
+} from "@/lib/constants/planner-assets";
 
 type PlannerObjectSize = {
   depth: number;
@@ -16,14 +18,19 @@ type PlannerObjectSize = {
   width: number;
 };
 
-function getPlannerObjectSize(item: PlannerPlacedItem, selectedVariantId?: string) {
-  const itemDef = PLANNER_ITEMS.find((entry) => entry.id === item.itemId);
+function getPlannerObjectSize(
+  item: PlannerPlacedItem,
+  items: PlannerItem[],
+  variantsByItemId: Record<string, PlannerItemVariant[]>,
+  selectedVariantId?: string,
+) {
+  const itemDef = items.find((entry) => entry.id === item.itemId);
 
   if (!itemDef) {
     return null;
   }
 
-  const visual = resolvePlannerItemVisual(itemDef, selectedVariantId);
+  const visual = resolvePlannerItemVisual(itemDef, variantsByItemId, selectedVariantId);
 
   return {
     def: itemDef,
@@ -92,7 +99,7 @@ function PlannerModelObject({
   const scale = fitScale * (scaleMultiplier ?? 1);
 
   return (
-    <group scale={scale}>
+    <group scale={scale} dispose={null}>
       <group position={[-bounds.center.x, -bounds.minY, -bounds.center.z]}>
         <Clone object={gltf.scene} />
       </group>
@@ -100,11 +107,27 @@ function PlannerModelObject({
   );
 }
 
+function appendVersionToUrl(url: string, version?: string) {
+  if (!version) {
+    return url;
+  }
+
+  try {
+    const resolvedUrl = new URL(url);
+    resolvedUrl.searchParams.set("v", version);
+    return resolvedUrl.toString();
+  } catch {
+    return url;
+  }
+}
+
 type PlannerThreeDObjectProps = {
   canSelect: boolean;
   isSelected: boolean;
   item: PlannerPlacedItem;
+  items: PlannerItem[];
   selectedVariantId?: string;
+  variantsByItemId: Record<string, PlannerItemVariant[]>;
   onSelect: (itemId: string) => void;
   onStartDrag: (itemId: string) => void;
 };
@@ -113,11 +136,13 @@ export function PlannerThreeDObject({
   canSelect,
   isSelected,
   item,
+  items,
   selectedVariantId,
+  variantsByItemId,
   onSelect,
   onStartDrag,
 }: PlannerThreeDObjectProps) {
-  const objectData = getPlannerObjectSize(item, selectedVariantId);
+  const objectData = getPlannerObjectSize(item, items, variantsByItemId, selectedVariantId);
 
   if (!objectData) {
     return null;
@@ -126,7 +151,15 @@ export function PlannerThreeDObject({
   const x = mapPlannerXToWorld(item.x);
   const z = mapPlannerYToWorld(item.y);
   const config = objectData.visual.modelConfig;
-  const modelUrl = config ? getPlannerModelAssetUrl(config.filename) : null;
+  const dbModelUrl = objectData.def.modelUrl
+    ? appendVersionToUrl(objectData.def.modelUrl, objectData.def.updatedAt ?? objectData.def.modelStoragePath)
+    : null;
+  const fallbackModelFilename = objectData.def.fallbackModelFilename as PlannerModelFilename | undefined;
+  const modelUrl = config
+    ? dbModelUrl ?? (fallbackModelFilename
+        ? getPlannerModelAssetUrl(fallbackModelFilename)
+        : null)
+    : null;
   const rotationY = -((item.rotation + (config?.rotationOffset ?? 0)) * Math.PI) / 180;
 
   return (
@@ -178,6 +211,6 @@ export function PlannerThreeDObject({
   );
 }
 
-Object.values(PLANNER_MODEL_CONFIG).forEach((config) => {
-  useGLTF.preload(getPlannerModelAssetUrl(config.filename));
+LOCAL_PLANNER_MODEL_FILENAMES.forEach((filename) => {
+  useGLTF.preload(getPlannerModelAssetUrl(filename));
 });

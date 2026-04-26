@@ -1,12 +1,19 @@
 export type VenueRecord = {
   address: string;
+  badgeLabel?: string;
+  bookingVideoSrc?: string;
   capacity: string;
+  capacityMax?: number;
+  capacityMin?: number;
   contactEmail: string;
   contactPhone: string;
   description: string;
   facilities: string[];
+  gallery?: VenueMediaRecord[];
   galleryTitle: string;
+  heroImageSrc?: string;
   intro: string;
+  mapEmbedUrl?: string;
   name: string;
   operatingHours: string;
   policies: string[];
@@ -18,6 +25,14 @@ export type VenueRecord = {
   };
   slug: string;
   state: string;
+  testimonyVideos?: VenueMediaRecord[];
+};
+
+export type VenueMediaRecord = {
+  alt: string;
+  caption?: string;
+  src: string;
+  storagePath?: string;
 };
 
 const STANDARD_AMENITIES = [

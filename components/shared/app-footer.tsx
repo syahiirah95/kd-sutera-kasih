@@ -87,6 +87,9 @@ export function AppFooter() {
             <Link className="transition hover:text-foreground" href="/terms">
               Terms of Service
             </Link>
+            <Link className="transition hover:text-foreground" href="/disclaimer">
+              Disclaimer
+            </Link>
           </div>
         </div>
       </PageShell>

@@ -42,8 +42,10 @@ export function Button(props: ButtonProps | ButtonLinkProps) {
   const { className, size, variant } = props;
 
   if ("asLink" in props && props.asLink) {
-    const { asLink, href, ...linkProps } = props;
+    const { asLink, href, size: _size, variant: _variant, ...linkProps } = props;
     void asLink;
+    void _size;
+    void _variant;
     return (
       <Link
         className={cn(buttonVariants({ size, variant }), className)}
@@ -53,14 +55,17 @@ export function Button(props: ButtonProps | ButtonLinkProps) {
     );
   }
 
-  const { asLink: _asLink, ...buttonProps } = props as ButtonProps & {
+  const { asLink: _asLink, size: _size, variant: _variant, ...buttonProps } = props as ButtonProps & {
     asLink?: false;
   };
   void _asLink;
+  void _size;
+  void _variant;
 
   return (
     <button
       className={cn(buttonVariants({ size, variant }), className)}
+      suppressHydrationWarning
       {...buttonProps}
     />
   );

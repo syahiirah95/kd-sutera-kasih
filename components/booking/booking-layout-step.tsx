@@ -3,9 +3,8 @@
 import { useMemo, useState } from "react";
 import { type BookingFormData } from "@/components/booking/booking-request-types";
 import { ContextHelp } from "@/components/help/context-help";
-import { PLANNER_ITEMS } from "@/components/planner/planner-data";
 import { PlannerLayoutShell } from "@/components/planner/planner-layout-shell";
-import { type PlannerPlacedItem } from "@/components/planner/planner-types";
+import { type PlannerItem, type PlannerItemVariant, type PlannerPlacedItem } from "@/components/planner/planner-types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -80,17 +79,19 @@ function createPreviewItems(tableCountValue: string, tableType: string, stageTyp
 
 type BookingLayoutStepProps = {
   formData: BookingFormData;
+  items: PlannerItem[];
   updateField: (field: keyof BookingFormData, value: string) => void;
 };
 
-const LAYOUT_REFERENCE_ITEMS = PLANNER_ITEMS.filter((item) =>
-  ["stage", "round-table", "rect-table", "chair", "pelamin", "floral", "photo-booth"].includes(item.id),
-);
-
 export function BookingLayoutStep({
   formData,
+  items,
   updateField,
 }: BookingLayoutStepProps) {
+  const layoutReferenceItems = items.filter((item) =>
+    ["stage", "round-table", "rect-table", "chair", "pelamin", "floral", "photo-booth", "butterfly-companion"].includes(item.id),
+  );
+
   return (
     <section>
       <div className="grid items-stretch gap-3 md:grid-cols-[3fr_1fr]">
@@ -123,7 +124,7 @@ export function BookingLayoutStep({
             Furniture & props
           </p>
           <div className="mt-2 space-y-1.5">
-            {LAYOUT_REFERENCE_ITEMS.map((item) => (
+            {layoutReferenceItems.map((item) => (
               <div
                 className="flex items-center justify-between gap-2 border-b border-[rgba(145,108,84,0.12)] pb-1.5 last:border-b-0 last:pb-0"
                 key={item.id}
@@ -141,7 +142,13 @@ export function BookingLayoutStep({
   );
 }
 
-export function BookingLayoutPreviewButton() {
+export function BookingLayoutPreviewButton({
+  items,
+  variantsByItemId,
+}: Readonly<{
+  items: PlannerItem[];
+  variantsByItemId: Record<string, PlannerItemVariant[]>;
+}>) {
   const [tableCount] = useState("12");
   const [tableType] = useState("round");
   const [stageType] = useState("low-stage");
@@ -149,7 +156,6 @@ export function BookingLayoutPreviewButton() {
     () => createPreviewItems(tableCount, tableType, stageType),
     [stageType, tableCount, tableType],
   );
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -169,13 +175,17 @@ export function BookingLayoutPreviewButton() {
               description="Review what each furniture and decor option is used for before selecting it in the planner."
             >
               <div className="booking-layout-preview-scroll max-h-[56dvh] space-y-4 overflow-y-auto pr-2">
-                {(["furniture", "decor"] as const).map((category) => (
+                {(["furniture", "decor", "companion"] as const).map((category) => (
                   <div key={category} className="space-y-2">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                      {category === "furniture" ? "Furniture" : "Decor & Setup"}
+                      {category === "furniture"
+                        ? "Furniture"
+                        : category === "decor"
+                          ? "Decor & Setup"
+                          : "Butterfly Companion"}
                     </p>
                     <div className="overflow-hidden rounded-[var(--radius-sm)] border border-border/70 bg-white/75">
-                      {PLANNER_ITEMS.filter((item) => item.category === category).map((item) => (
+                      {items.filter((item) => item.category === category).map((item) => (
                         <div key={item.id} className="border-b border-border/65 px-3 py-2.5 last:border-b-0">
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <p className="text-sm font-semibold text-foreground">{item.label}</p>
@@ -197,7 +207,13 @@ export function BookingLayoutPreviewButton() {
           </DialogDescription>
         </DialogHeader>
         <div className="min-h-0 flex-1 overflow-hidden">
-          <PlannerLayoutShell initialReceptionItems={previewItems} singlePreset toolbarPlacement="top" />
+          <PlannerLayoutShell
+            initialReceptionItems={previewItems}
+            items={items}
+            singlePreset
+            toolbarPlacement="top"
+            variantsByItemId={variantsByItemId}
+          />
         </div>
       </DialogContent>
     </Dialog>
