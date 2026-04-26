@@ -1,11 +1,6 @@
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Users } from "lucide-react";
-import birthdayHero from "@/assets/event-gallery/birthday.png";
-import corporateHero from "@/assets/event-gallery/corporate.png";
-import engagementHero from "@/assets/event-gallery/engagement.png";
-import graduationHero from "@/assets/event-gallery/graduation.png";
-import weddingHero from "@/assets/event-gallery/wedding.png";
 import { Button } from "@/components/ui/button";
 import { type VenueRecord } from "@/lib/data/venues";
 import { cn } from "@/lib/utils";
@@ -14,12 +9,14 @@ const VENUE_SELECTOR_BUTTON_CLASS =
   "booking-form-nav-primary !h-7 !w-24 !rounded-lg !border !border-[#c8893e]/55 !bg-[linear-gradient(135deg,#dca453_0%,#bf762f_52%,#f0c46c_100%)] !px-2 !text-[11px] !font-semibold !leading-none !text-white shadow-[0_8px_20px_rgba(184,111,41,0.28)]";
 const DB_ONLY_MEDIA_VENUE_SLUG = "sutera-kasih-cinta";
 
-const VENUE_HERO_IMAGES: Record<string, StaticImageData> = {
-  "sutera-kasih-anggun": weddingHero,
-  "sutera-kasih-bahagia": graduationHero,
-  "sutera-kasih-cinta": engagementHero,
-  "sutera-kasih-pesona": corporateHero,
-  "sutera-kasih-rindu": birthdayHero,
+const DEFAULT_VENUE_HERO_IMAGE = "/event-gallery/wedding.png";
+
+const VENUE_HERO_IMAGES: Record<string, string> = {
+  "sutera-kasih-anggun": "/event-gallery/wedding.png",
+  "sutera-kasih-bahagia": "/event-gallery/graduation.png",
+  "sutera-kasih-cinta": "/event-gallery/engagement.png",
+  "sutera-kasih-pesona": "/event-gallery/corporate.png",
+  "sutera-kasih-rindu": "/event-gallery/birthday.png",
 };
 
 const VENUE_BADGES: Record<string, string> = {
@@ -40,7 +37,7 @@ export function VenueSelectorList({
   const heroImage =
     activeVenue.slug === DB_ONLY_MEDIA_VENUE_SLUG
       ? activeVenue.heroImageSrc
-      : activeVenue.heroImageSrc ?? VENUE_HERO_IMAGES[activeVenue.slug] ?? weddingHero;
+      : activeVenue.heroImageSrc ?? VENUE_HERO_IMAGES[activeVenue.slug] ?? DEFAULT_VENUE_HERO_IMAGE;
   const venueBadge = activeVenue.badgeLabel ?? VENUE_BADGES[activeVenue.slug] ?? "Featured Venue";
 
   return (
@@ -53,7 +50,7 @@ export function VenueSelectorList({
           className="object-cover"
           sizes="100vw"
           src={heroImage}
-          unoptimized={typeof heroImage === "string"}
+          unoptimized
         />
       ) : null}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,247,237,0.94)_0%,rgba(255,247,237,0.78)_38%,rgba(255,247,237,0.34)_72%,rgba(52,38,29,0.1)_100%)]" />
