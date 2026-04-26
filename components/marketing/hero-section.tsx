@@ -44,8 +44,8 @@ export async function HeroSection() {
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,247,237,0.96)_0%,rgba(255,247,237,0.88)_34%,rgba(255,247,237,0.44)_66%,rgba(52,38,29,0.18)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_22%,rgba(255,246,225,0.72)_0%,rgba(255,246,225,0)_38%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-[min(100%,82rem)] items-center px-4 py-8 md:px-6 md:py-10">
-        <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,1fr)_27rem] lg:items-center xl:grid-cols-[minmax(0,1fr)_29rem]">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-[min(100%,84rem)] items-center px-4 py-8 md:px-6 md:py-10">
+        <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,1fr)_31rem] lg:items-center xl:grid-cols-[minmax(0,1fr)_34rem]">
           <div className="flex min-h-[calc(100vh-9rem)] flex-col justify-center">
             <div className="max-w-3xl space-y-5">
               <p className="inline-flex rounded-full border border-[#d49b6a]/55 bg-[linear-gradient(135deg,rgba(220,164,83,0.34)_0%,rgba(255,250,244,0.58)_100%)] px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8d542d] shadow-[0_10px_26px_rgba(114,76,43,0.14)]">

@@ -20,7 +20,7 @@ export function HeroTestimonyCarousel({
 
   if (!videos.length) {
     return (
-      <div className="overflow-hidden rounded-[1.1rem] border-[3px] border-[#ead2b3]/90 bg-white/20 shadow-[0_18px_42px_rgba(114,76,43,0.16)] backdrop-blur-md">
+      <div className="overflow-hidden rounded-[1.1rem] border-[3px] border-[#dca453] bg-white/20 shadow-[0_18px_42px_rgba(114,76,43,0.16)] backdrop-blur-md">
         <div className="rounded-[0.85rem] bg-[rgba(255,251,246,0.52)] px-4 py-8 text-center text-sm leading-7 text-[#6f5648]">
           Testimony video untuk {venueName} belum dimuat naik lagi.
         </div>
@@ -29,15 +29,15 @@ export function HeroTestimonyCarousel({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[29rem] flex-col items-center gap-3 lg:max-w-none">
-      <div className="relative w-full overflow-hidden rounded-[1.1rem] border-[3px] border-[#ead2b3]/90 bg-[#2b1d16]/86 shadow-[0_18px_42px_rgba(35,23,18,0.24)]">
+    <div className="mx-auto flex w-full max-w-[34rem] flex-col items-center gap-3 lg:max-w-none">
+      <div className="relative w-full overflow-hidden rounded-[1.1rem] border-[3px] border-[#dca453] bg-[#2b1d16]/86 shadow-[0_18px_42px_rgba(35,23,18,0.24)]">
         <span className="pointer-events-none absolute right-3 top-3 z-10 rounded-full border border-white/20 bg-black/52 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-white/78 backdrop-blur">
           {safeActiveIndex + 1} / {videos.length}
         </span>
         <video
           key={activeVideo.src}
           autoPlay
-          className="aspect-[4/5] w-full object-cover md:aspect-[16/11] lg:aspect-[4/5]"
+          className="aspect-[16/12] w-full object-cover md:aspect-[16/10] lg:aspect-[16/10]"
           controls
           muted
           onEnded={() => setActiveIndex((currentIndex) => (currentIndex + 1) % videos.length)}
