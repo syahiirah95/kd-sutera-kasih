@@ -1,80 +1,95 @@
-import { CalendarDays, LayoutDashboard, Sparkles } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { HeroTestimonyCarousel } from "@/components/marketing/hero-testimony-carousel";
 import { APP_SUMMARY } from "@/lib/constants/app";
+import { getVenuesFromSupabase } from "@/lib/supabase/venue-data";
+import { cn } from "@/lib/utils";
 
-export function HeroSection() {
+const HOME_HERO_BUTTON_CLASS =
+  "booking-form-nav-primary !h-10 !min-w-[8.75rem] !rounded-full !border !border-[#c8893e]/55 !bg-[linear-gradient(135deg,#dca453_0%,#bf762f_52%,#f0c46c_100%)] !px-4 !text-sm !font-semibold !leading-none !text-white shadow-[0_8px_20px_rgba(184,111,41,0.28)]";
+const HOMEPAGE_FEATURED_VENUE_SLUG = "sutera-kasih-cinta";
+
+export async function HeroSection() {
+  const venues = await getVenuesFromSupabase();
+  const activeVenue = venues.find((venue) => venue.slug === HOMEPAGE_FEATURED_VENUE_SLUG) ?? venues[0];
+
+  if (!activeVenue) {
+    return null;
+  }
+
   return (
-    <section className="page-shell">
-      <div className="grid gap-8 overflow-hidden rounded-[2rem] border border-white/50 bg-gradient-to-br from-white/90 via-[#fff7ef] to-[#fdebd7] p-6 shadow-[0_28px_100px_rgba(128,86,54,0.16)] md:p-10 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-6">
-          <p className="inline-flex rounded-full border border-primary/20 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-            Sutera Kasih Collection
-          </p>
-          <div className="space-y-4">
-            <h1 className="max-w-4xl font-display text-5xl font-semibold leading-[0.92] text-foreground md:text-7xl">
-              A graceful venue booking experience for your most meaningful events.
-            </h1>
-            <p className="max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
-              {APP_SUMMARY}
-            </p>
+    <section className="relative isolate min-h-[calc(100vh-4rem)] overflow-hidden border-b border-white/55 shadow-[0_18px_44px_rgba(114,76,43,0.12)]">
+      {activeVenue.heroImageSrc ? (
+        <Image
+          fill
+          priority
+          alt={`${activeVenue.name} venue atmosphere`}
+          className="object-cover"
+          sizes="100vw"
+          src={activeVenue.heroImageSrc}
+          unoptimized
+        />
+      ) : activeVenue.bookingVideoSrc ? (
+        <video
+          autoPlay
+          className="absolute inset-0 h-full w-full object-cover"
+          loop
+          muted
+          playsInline
+          preload="metadata"
+        >
+          <source src={activeVenue.bookingVideoSrc} type="video/mp4" />
+        </video>
+      ) : null}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,247,237,0.96)_0%,rgba(255,247,237,0.88)_34%,rgba(255,247,237,0.44)_66%,rgba(52,38,29,0.18)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_22%,rgba(255,246,225,0.72)_0%,rgba(255,246,225,0)_38%)]" />
+
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-[min(100%,82rem)] items-center px-4 py-8 md:px-6 md:py-10">
+        <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,1fr)_27rem] lg:items-center xl:grid-cols-[minmax(0,1fr)_29rem]">
+          <div className="flex min-h-[calc(100vh-9rem)] flex-col justify-center">
+            <div className="max-w-3xl space-y-5">
+              <p className="inline-flex rounded-full border border-[#d49b6a]/55 bg-[linear-gradient(135deg,rgba(220,164,83,0.34)_0%,rgba(255,250,244,0.58)_100%)] px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8d542d] shadow-[0_10px_26px_rgba(114,76,43,0.14)]">
+                Sutera Kasih Collection
+              </p>
+              <div className="space-y-3">
+                <h1 className="inline-block font-display text-[2.4rem] font-bold leading-[0.96] text-[#1f1712] [text-shadow:0_1px_0_rgba(255,231,181,0.9),0_6px_18px_rgba(196,137,62,0.32)] md:text-[3.4rem] xl:text-[3.9rem]">
+                  Sutera Kasih Hall
+                </h1>
+                <p className="max-w-2xl text-sm leading-7 text-[#5f3f2f] md:text-base">
+                  {APP_SUMMARY}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <Button
+                  asLink
+                  className={cn(HOME_HERO_BUTTON_CLASS, "!items-center !justify-center !py-0 text-center")}
+                  href={`/booking?venue=${activeVenue.slug}`}
+                  size="default"
+                >
+                  <span className="relative z-10 inline-flex h-full items-center leading-none">
+                    Book now
+                  </span>
+                </Button>
+                <Button
+                  asLink
+                  className={cn(HOME_HERO_BUTTON_CLASS, "!items-center !justify-center !py-0 text-center")}
+                  href="/venue"
+                  size="default"
+                >
+                  <span className="relative z-10 inline-flex h-full items-center leading-none">
+                    View venues
+                  </span>
+                </Button>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Button asLink href="/booking" size="xl">
-              Start booking
-            </Button>
-            <Button asLink href="/venue" size="xl" variant="secondary">
-              Explore venue details
-            </Button>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            {[
-              {
-                icon: CalendarDays,
-                label: "Custom booking time",
-              },
-              {
-                icon: Sparkles,
-                label: "Elegant event atmosphere",
-              },
-              {
-                icon: LayoutDashboard,
-                label: "Simple request management",
-              },
-            ].map((item) => (
-              <Card key={item.label} className="border-white/70 bg-white/70">
-                <CardContent className="flex items-center gap-3 p-4 text-sm text-muted-foreground">
-                  <item.icon className="size-4 text-primary" />
-                  {item.label}
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex w-full flex-col justify-center self-center">
+            <HeroTestimonyCarousel
+              venueName={activeVenue.name}
+              videos={activeVenue.testimonyVideos ?? []}
+            />
           </div>
         </div>
-        <Card className="glass-panel border-white/60">
-          <CardContent className="space-y-6 p-6 md:p-8">
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                Why choose Sutera Kasih
-              </p>
-              <h2 className="font-display text-3xl font-semibold">
-                Made for celebrations that deserve a beautiful setting
-              </h2>
-            </div>
-            <div className="grid gap-3 text-sm leading-7 text-muted-foreground">
-              <p>Comfortable hall setting for intimate and large-scale events</p>
-              <p>Clear venue details, policies, and booking steps</p>
-              <p>Custom event timing for better planning</p>
-              <p>Beautiful visual presentation to help you picture the space</p>
-              <p>Simple request flow with room for custom event notes</p>
-            </div>
-            <div className="rounded-[var(--radius-lg)] border border-white/70 bg-white/75 p-5">
-              <p className="text-sm leading-7 text-muted-foreground">
-                From receptions and engagements to graduations and corporate gatherings, the Sutera Kasih collection is presented as a group of halls that feel refined, welcoming, and easy to book.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </section>
   );

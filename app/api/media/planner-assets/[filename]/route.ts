@@ -21,7 +21,7 @@ export async function GET(
     );
   }
 
-  const assetPath = path.join(process.cwd(), "assets", "obj_glb", filename);
+  const assetPath = path.join(process.cwd(), "public", "planner-assets", filename);
 
   try {
     const assetBuffer = await readFile(assetPath);
